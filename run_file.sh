@@ -1,3 +1,3 @@
-# Provide file name as argument
-g++ -o output $1
+# Provide folder name as argument
+g++ -o output $*/*.cpp
 ./output
