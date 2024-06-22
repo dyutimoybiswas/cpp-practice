@@ -22,6 +22,11 @@ int main(int argc, char const *argv[])
     vector<int> vect {1, 2, 3, 4, 5, 6};
     cout << "Element 3" << (isPresent(vect, vect.cbegin(), vect.cend() - 1, 3) ? " is present" : " isn't present") << " in the vector." << endl;
 
+    // Reverse traversal
+    for (auto it = vect.rbegin(); it != vect.rend(); ++it)
+        cout << *it << " ";
+    cout << endl;
+
     // Exercise 9.6 - list iterator does not support < and >
     // Exercise 9.7, 9.8 - vector<type>::size_type, list<type>::const_iterator/iterator
     // Exercise 9.10 - vector<type>::iterator, vector<type>::const_iterator
