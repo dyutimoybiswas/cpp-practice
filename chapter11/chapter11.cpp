@@ -93,8 +93,8 @@ int main(int argc, char const *argv[])
     // string word;
     // while (cin >> word) {   // get inputs
     //     auto ret = wc.insert({word, 1});    // initialize count
-    //     if (!ret.second)                    // word was already added
-    //         ++ret.first->second;            // first = iterator, second = count. Increment if present.
+    //     if (!ret.second)                    // word was already added (insertion failure)
+    //         ++ret.first->second;            // first = iterator, second = count. Increment if present. Note: ret.second is bool.
     // }
     
     // Exercise 11.23
