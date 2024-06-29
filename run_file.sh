@@ -1,3 +1,3 @@
 # Provide folder name as argument
-g++ -o output $*/*.cpp
+g++ -std=c++20 -o output $*/*.cpp
 ./output
