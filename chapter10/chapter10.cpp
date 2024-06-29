@@ -17,6 +17,7 @@ using std::for_each;
 using std::bind;
 using std::placeholders::_1;
 using std::placeholders::_2;
+using std::ostream_iterator;
 
 int main(int argc, char const *argv[])
 {
@@ -36,6 +37,12 @@ int main(int argc, char const *argv[])
 
     // Exercise 10.4 - no issue/ initial should be 0.0
     // Exercise 10.5 - error since const char* has no == operation defined
+
+    // Note: below call results in error, since v is empty.
+    // constexpr int randomSize = 4;
+    // constexpr int randomData = 6;
+    // vector<int> v;
+    // fill_n(v.begin(), randomSize, randomData);
 
     // Exercise 10.6
     int arr[5];
@@ -64,6 +71,23 @@ int main(int argc, char const *argv[])
     // Note - lambda usage
     short sz = 5;
     auto itr = find_if(w1.cbegin(), w1.cend(), [sz](const string&a) {return a.size() >= sz;});
+    auto test = [](int x, int y) -> int {
+        cout << "Dummy statement" << endl;
+        return x * y;
+    };
+    cout << test(4, 5) << endl;     // returns void if return type not specified.
+
+    // Example - for_each usage (prints elements of the container).
+    for_each(w1.cbegin(), w1.cend(), [](const string& s) {
+        cout << s << " ";
+    });
+    cout << endl;
+
+    // Example - ostream_iterator usage (prints elements separated by a delimiter).
+    ostream_iterator<string> os(cout, ", ");
+    for(string word: w1)
+        *os++ = word;   // writes element(word) to cout.
+    cout << endl;
 
     // Exercise 10.14
     auto s = [] (int x, int y) { return x + y; };

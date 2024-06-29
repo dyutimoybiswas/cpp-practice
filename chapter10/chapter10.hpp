@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <iterator>
 #include <functional>
 
 bool isShorter (const std::string&, const std::string&);
