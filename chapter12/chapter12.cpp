@@ -1,8 +1,19 @@
 #include "chapter12.hpp"
 
+using std::shared_ptr;
+using std::unique_ptr;
+
 StrBlob b1;
 int main(int argc, char const *argv[])
 {
+    // Example - shared pointers.
+    shared_ptr<int> p(new int(42));
+    int x = 28;
+    shared_ptr<int> px(&x);
+
+    // Example - unique pointers.
+    unique_ptr<int> u(new int(29));
+
     StrBlob b2 = {"a", "an", "the"};
     b1 = b2;
     b2.push_back("about");
@@ -20,7 +31,7 @@ int main(int argc, char const *argv[])
 
     // using shared_ptr to manage arrays - deleter is *mandatory*.
     auto deleter = [](int* p) { delete [] p; };
-    std::shared_ptr<int> sp(new int[10], deleter);
+    shared_ptr<int> sp(new int[10], deleter);
 
     return 0;
 }
