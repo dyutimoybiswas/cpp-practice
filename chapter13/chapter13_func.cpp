@@ -1,13 +1,46 @@
 #include "chapter13.hpp"
 
-HasPtr& HasPtr::operator=(const HasPtr& rhs) {
+/*HasPtr& HasPtr::operator=(const HasPtr& rhs) {
     // copy is done to prevent undefined behavior when lhs and rhs are the same object
+    // i.e. when an object is assigned to itself.
     auto newp = new std::string(*rhs.ps);
     // delete lhs ps and redefine them from rhs
     delete ps;
     ps = newp;
     i = rhs.i;
     return *this;   // lhs
+}*/
+HasPtr& HasPtr::operator=(const HasPtr& rhs) {
+    ++*rhs.use; // increment ref count
+    // if lhs = rhs, use will become 0. Then free members before copying.
+    if (--*use == 0) {
+        delete ps;
+        delete use;
+    }
+    // copying
+    ps = rhs.ps;
+    i = rhs.i;
+    use = rhs.use;
+    return *this;
+}
+
+// uses swap.
+HasPtr& HasPtr::operator=(HasPtr rhs) {
+    swap(*this, rhs);   // swaps lhs & rhs
+    return *this;       // returns lhs, rhs is destroyed as control goes out of scope.
+}
+
+inline void swap(HasPtr& lhs, HasPtr& rhs) {
+    std::swap(lhs.ps, rhs.ps);
+    std::swap(lhs.i, rhs.i);
+}
+
+HasPtr::~HasPtr() {
+    // decrement ref count, and if it's 0, free resources.
+    if (--*use == 0) {
+        delete ps;
+        delete use;
+    }
 }
 
 void Message::save(Folder& f) {
@@ -45,6 +78,7 @@ void Message::moveFolders(Message* m) {
 }
 
 Message::~Message() {
+    // not marked as noexcept as allocation might throw bad_alloc exception.
     removeFromFolders();
 }
 
@@ -120,7 +154,7 @@ StrVec& StrVec::operator=(const StrVec& rhs) {
     return *this;
 }
 
-void StrVec::reallocate() {
+/*void StrVec::reallocate() {
     auto newCapacity = size() ? 2 * size() : 1;
     auto newData = alloc.allocate(newCapacity);
 
@@ -131,6 +165,18 @@ void StrVec::reallocate() {
     free();
     elements = newData;
     first_free = dest;
+    cap = elements + newCapacity;
+}*/
+
+void StrVec::reallocate() {
+    auto newCapacity = size() ? 2 * size() : 1;
+    auto first = alloc.allocate(newCapacity);
+
+    // move the elements.
+    auto last = std::uninitialized_copy(std::make_move_iterator(begin), std::make_move_iterator(end), first);
+    free();
+    elements = first;
+    first_free = last;
     cap = elements + newCapacity;
 }
 
@@ -151,3 +197,15 @@ StrVec& StrVec::operator=(StrVec&& rhs) noexcept {
     return *this;
 }
 
+// this is rvalue, so sorted in-place.
+Foo Foo::sorted() && {
+    std::sort(data.begin(), data.end());
+    return *this;
+}
+
+// this is either const or lvalue, cannot sort in-place.
+Foo Foo::sorted() const & {
+    Foo ret(*this);
+    sort(ret.data.begin(), ret.data.end());
+    return ret;
+}

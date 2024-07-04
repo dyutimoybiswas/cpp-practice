@@ -9,17 +9,23 @@
 
 // Exercise 13.5 - TODO: verify
 class HasPtr {
+    public:
+        // each object's ps member will have its own copy of string s.
+        HasPtr(const HasPtr& hp, const std::string& s = std::string(), int x = 0) 
+        : ps(new std::string(s)), i(x), use(new std::size_t(1)) { }
+        HasPtr(const HasPtr& hp) 
+        : ps(hp.ps), i(hp.i), use(hp.use) { }
+        HasPtr& operator=(const HasPtr&);
+        HasPtr& operator=(HasPtr);      // passed by value
+        friend void swap(HasPtr&, HasPtr&);
+        /*// Exercise 13.11
+        ~HasPtr() {
+            delete ps;
+        }*/
     private:
         std::string *ps;
         int i;
-    public:
-        HasPtr(const HasPtr& hp, const std::string& s = std::string(), int x = 0) : ps(new std::string(s)), i(x) { }
-        HasPtr(const HasPtr& hp) : ps(hp.ps), i(hp.i) { }
-        HasPtr& operator=(const HasPtr&);
-        // Exercise 13.11
-        ~HasPtr() {
-            delete ps;
-        }
+        std::size_t* use;   // reference counter
 };
 
 /**Example - copy control
@@ -94,5 +100,16 @@ class StrVec {
         inline std::string* end() const { return first_free; }
 };
 std::allocator<std::string>StrVec::alloc;
+
+
+// Example - lvalue and rvalue reference member functions.
+class Foo {
+    public:
+        Foo& operator=(const Foo&) &;   // assign only to modifiable lvalues.
+        Foo sorted() &&;        // run on modifiable rvalues
+        Foo sorted() const &;   // run on any object
+    private:
+        std::vector<int> data;
+};
 
 #endif
