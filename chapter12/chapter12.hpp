@@ -19,6 +19,20 @@ class StrBlobPtr {
         StrBlobPtr(StrBlob& a, std::size_t sz = 0): wptr(a.data), curr(sz) {}
         std::string& deref() const;
         StrBlobPtr& incr();
+        inline std::string& operator*() const {
+            auto p = check(curr, "dereference past end");
+            return (*p)[curr];
+        }
+        inline std::string* operator->() const {
+            return &this->operator*();
+        }
+        // prefix
+        StrBlobPtr& operator++();
+        StrBlobPtr& operator--();
+        // postfix - compiler supplies 0 as argument, not to be used.
+        StrBlobPtr& operator++(int);
+        StrBlobPtr& operator--(int);
+        
 };
 
 typedef std::vector<std::string>::size_type size_type;

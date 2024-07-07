@@ -85,6 +85,7 @@ class StrVec {
         StrVec(): elements(nullptr), first_free(nullptr), cap(nullptr) {}
         StrVec(const StrVec&);
         StrVec& operator=(const StrVec&);
+        StrVec& operator=(std::initializer_list<std::string>);
         StrVec(StrVec&&);                // move constructor
         StrVec& operator=(StrVec&&);     // move assignment
         inline ~StrVec() { free(); }
@@ -98,6 +99,8 @@ class StrVec {
         inline std::string* begin() const { return elements; }
         // pointer to one past last element.
         inline std::string* end() const { return first_free; }
+        inline std::string& operator[](std::size_t n) { return elements[n]; }
+        inline std::string& operator[](std::size_t n) const { return elements[n]; }
 };
 std::allocator<std::string>StrVec::alloc;
 
