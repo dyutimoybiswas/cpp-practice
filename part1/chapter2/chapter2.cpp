@@ -41,7 +41,7 @@ int main(void) {
     int v = 0, &r1 = v; double d = 0, &r2 = d;
     r2 = 3.14159;   // modifies d
     r2 = r1;        // modifies d to 0
-    v = r2;         // x stays 0
+    v = r2;         // v stays 0
     r1 = 2;         // changes v to 2
 
     // Exercise 2.35
