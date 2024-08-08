@@ -45,9 +45,6 @@ int main(void) {
     // Assignment can appear as a condition
     if (int x = 5) std::cout << "Always executes." << std::endl;
 
-    // Never executes.
-    if (int x = 't') {} else {}
-
     // Print numbers as they are entered and calculate frequencies in real time.
     int value = 0, lastValue = 0;
     if (std::cin >> lastValue) {    // To ensure at least one value has been entered.
