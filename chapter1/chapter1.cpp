@@ -2,7 +2,7 @@
 
 int main(void) {
     // Excercise 1.2
-    #ifdef EX1.2
+    #ifdef EX1_2
     return -1; // prints 255
     #endif
 
@@ -38,7 +38,7 @@ int main(void) {
     std::cout << sum << std::endl;  // 0
 
     // Excercise 1.16
-    #ifdef EX1.16
+    #ifdef EX1_16
     int x; sum = 0;
     while (std::cin >> x) {
         sum += x;
