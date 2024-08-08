@@ -2,7 +2,9 @@
 
 int main(void) {
     // Excercise 1.2
-    // return -1; // prints 255
+    #ifdef EX1.2
+    return -1; // prints 255
+    #endif
 
     // Excercise 1.3
     std::cout << "Hello, World!" << std::endl;
@@ -36,11 +38,13 @@ int main(void) {
     std::cout << sum << std::endl;  // 0
 
     // Excercise 1.16
-    // int x; sum = 0;
-    // while (std::cin >> x) {
-    //     sum += x;
-    // }
-    // std::cout << sum << std::endl;
+    #ifdef EX1.16
+    int x; sum = 0;
+    while (std::cin >> x) {
+        sum += x;
+    }
+    std::cout << sum << std::endl;
+    #endif
 
     // Assignment can appear as a condition
     if (int x = 5) std::cout << "Always executes." << std::endl;
