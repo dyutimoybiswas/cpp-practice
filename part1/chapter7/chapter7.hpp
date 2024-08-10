@@ -71,22 +71,6 @@ class Screen {
         std::string contents;
 };
 
-// Exercise 7.31
-// class X;
-// class Y;
-// class X {
-//     Y* pY;
-// };
-// class Y {
-//     X objX;
-// };
-
-// Exercise 7.36 - no error
-struct X {
-    X(int i, int j):base(i), rem(base%j) {}
-    int rem, base;
-};
-
 class SalesDataNew {
     public:
         int member;

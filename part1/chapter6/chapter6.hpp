@@ -26,11 +26,6 @@ int sumElements (std::initializer_list<int>);
 void printVector (const std::vector<int>&, std::vector<int>::iterator);
 std::string make_plural(size_t ctr, const std::string&, const std::string& = "s");
 
-// Excercise 6.44
-inline bool isShorter(const std::string &s1, const std::string &s2) {
-    return s1.size() < s2.size();
-}
-
 // Excercise 6.54 & 6.56
 int baz (int, int);
 int bam (int, int);

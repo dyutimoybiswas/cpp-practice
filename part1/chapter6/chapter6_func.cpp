@@ -79,11 +79,6 @@ string make_plural(size_t ctr, const string &word, const string &ending) {
     return ctr > 1 ? word + ending : word;
 }
 
-// Excercise 6.46
-// constexpr bool isShorter(const string &s1, const string &s2) {
-//     return s1.size() < s2.size();   // error: size is non-constexpr
-// }
-
 // Excercise 6.54 & 6.56
 int baz (int a, int b) {
     cout << "Called baz. a = " << a << " and b = " << b << endl;

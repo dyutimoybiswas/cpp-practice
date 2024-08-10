@@ -9,36 +9,47 @@ using std::string;
 int main(void) {
 
     // Exercise 4.1
+    #ifdef EXERCISE1
     cout << (5 + 10 * 20 / 2) << endl;  // 105
+    #endif
 
     // Exercise 4.4
+    #ifdef EXERCISE4
     cout << (12/3*4+5*15+24%4/2) << endl;  // 16+75+0=91
+    #endif
 
     // Exercise 4.10 - TODO: check solution
-    // int x;
-    // cout << "Enter numbers: ";
-    // while (cin >> x) {
-    //     if (x == 42) break;
-    //     cout << x << " ";
-    // }
-    // cout << endl;
+    #ifdef EXERCISE10
+    int x;
+    cout << "Enter numbers: ";
+    while (cin >> x) {
+        if (x == 42) break;
+        cout << x << " ";
+    }
+    cout << endl;
+    #endif
 
     // Exercise 4.11
-    // int a, b, c, d;
-    // cout << "Enter 4 numbers: ";
-    // cin >> a >> b >> c >> d;
-    // if (!(a > b && b > c && c > d)) {
-    //     cout << "Criteria do not match!" << endl;
-    // }
+    #ifdef EXERCISE11
+    int a, b, c, d;
+    cout << "Enter 4 numbers: ";
+    cin >> a >> b >> c >> d;
+    if (!(a > b && b > c && c > d)) {
+        cout << "Criteria do not match!" << endl;
+    }
 
-    // cout << (a = 2) << endl;    // prints 2
+    cout << (a = 2) << endl;    // prints 2
+    #endif
 
     // Exercise 4.13
+    #ifdef EXERCISE13
     int i; double d;
     d = i = 3.5;    // both 3
     i = d = 3.5;    // 3 and 3.5
+    #endif
 
     // Exercise 4.19 - TODO: check solution
+    #ifdef EXERCISE19
     int ival = -1;
     cout << (ival++ && ival) << endl;
 
@@ -46,8 +57,10 @@ int main(void) {
     int &ra = a, &rb = b;
     // int &r[2];           // invalid
     int r[] = {ra, rb};     // valid
+    #endif
 
     // Exercise 4.32
+    #ifdef EXERCISE32
     constexpr int size = 5;
     int ia[size] = {1,2,3,4,5};
     for (int *ptr = ia, ix = 0;  // ptr=&ia[0], ix is 0
@@ -66,4 +79,5 @@ int main(void) {
     // Exercise 4.32
     void *pv; const string *ps;
     // pv = const_cast<void*>(ps);  // error
+    #endif
 }
