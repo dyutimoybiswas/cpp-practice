@@ -9,6 +9,7 @@
 #include <sstream>
 #include <initializer_list>
 
+// FIXME: check compilation errors.
 class StrBlobPtr {
     private:
         std::shared_ptr<std::vector<std::string>> check (std::size_t, const std::string&) const;

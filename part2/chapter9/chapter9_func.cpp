@@ -2,7 +2,6 @@
 
 bool isPresent (const std::vector<int>& v, std::vector<int>::const_iterator it1, std::vector<int>::const_iterator it2, int value) {
     while (it1 < it2) {
-        // std::cout<<*it1<<" "<<*it2<<std::endl;
         if (*it1 == value || *it2 == value) {
             return true;
         }

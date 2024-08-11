@@ -7,6 +7,7 @@ StrBlob b1;
 int main(int argc, char const *argv[])
 {
     // Example - shared pointers.
+    #ifdef CUSTOM
     shared_ptr<int> p(new int(42));
     int x = 28;
     shared_ptr<int> px(&x);
@@ -17,6 +18,7 @@ int main(int argc, char const *argv[])
     StrBlob b2 = {"a", "an", "the"};
     b1 = b2;
     b2.push_back("about");
+    #endif
     // Exercise 12.1 - 4
 
     // Exercise 12.3 - we can modify push_back and pop_back to const.
@@ -30,13 +32,17 @@ int main(int argc, char const *argv[])
     // Exercise 12.17 - a, c will cause error
 
     // using shared_ptr to manage arrays - deleter is *mandatory*.
+    #ifdef CUSTOM
     auto deleter = [](int* p) { delete [] p; };
     shared_ptr<int> sp(new int[10], deleter);
+    #endif
 
     return 0;
 }
 
 // Exercise 12.15
-/*struct connection;
+#ifdef EXERCISE15
+struct connection;
 void disconnect(connection);
-auto end_connection = [](connection* p) { disconnect(*p); }*/
+auto end_connection = [](connection* p) { disconnect(*p); };
+#endif

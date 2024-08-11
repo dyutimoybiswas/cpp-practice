@@ -18,11 +18,14 @@ using std::istringstream;
 int main(int argc, char const *argv[])
 {
     // Exercise 8.1 & 8.2
-    // read(cin);  
+    #if defined(EXERCISE1) || defined(EXERCISE2)
+    read(cin);
+    #endif
 
     // Exercise 8.3 - when EOF or invalid input is entered (eofbit/badbit/failbit).
     
     // Exercise 8.4
+    #ifdef EXERCISE4
     ifstream input;
     input.open(fileName);
     if (!input) {
@@ -33,12 +36,17 @@ int main(int argc, char const *argv[])
     string s;
     while (getline(input, s))
         v.push_back(s);
-    // cout << "Lines:" << endl;
-    // for (string line: v)
-    //     cout << line << endl;
+    cout << "Lines:" << endl;
+    for (string line: v)
+        cout << line << endl;
     input.close();
+    #endif
 
     // Exercise 8.5
+    #ifdef EXERCISE5
+    ifstream input;
+    vector<string> v;
+    string s;
     v.clear();
     input.open(fileName);
     if (!input) {
@@ -47,12 +55,17 @@ int main(int argc, char const *argv[])
     }
     while (input >> s) 
         v.push_back(s);
-    // cout << "Words:" << endl;
-    // for (string word: v)
-    //     cout << word << endl;
+    cout << "Words:" << endl;
+    for (string word: v)
+        cout << word << endl;
     input.close();
+    #endif
 
     // Exercise 8.10
+    #ifdef EXERCISE10
+    ifstream input;
+    vector<string> v;
+    string s;
     v.clear();
     input.open(fileName);
     if (!input) {
@@ -69,6 +82,7 @@ int main(int argc, char const *argv[])
             cout << word << endl;
         }
     }
+    #endif
 
     // Exercise 8.14 - const because not modifying members, reference to prevent copying.
     return 0;

@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-const std::string fileName = "/home/dyutimoy/Desktop/repositories/cpp-primer-solutions/chapter8/lorem_ipsum.txt";
+const std::string fileName = "/home/dyutimoy/repositories/cpp-primer-solutions/part2/chapter8/lorem_ipsum.txt";
 std::istream& read (std::istream&);
 
 #endif
