@@ -7,6 +7,8 @@
 #include <functional>
 #include <algorithm>
 
+// FIXME: check and fix compilation errors.
+
 // Example of linkage directives.
 extern "C" {
     #include <math.h>

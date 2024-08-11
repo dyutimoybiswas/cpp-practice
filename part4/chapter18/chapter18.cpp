@@ -6,7 +6,7 @@ using std::endl;
 using std::cerr;
 
 int main (void) {
-
+    #ifdef CUSTOM
     // Usage of namespace.
     using cplusplus_primer::Sales_data;
     using cplusplus_primer::custom_exceptions::isbn_mismatch;
@@ -16,14 +16,14 @@ int main (void) {
     
     // Example of custom exception usage.
     Sales_data item1, item2, sum;
-    // while (cin >> item1 >> item2) {
-    //     try {
-    //         sum = item1 + item2;
-    //     } catch (const isbn_mismatch& e) {
-    //         cerr << e.what() << ": left isbn(" << e.left
-    //              << ") right isbn(" << e.right << ")" << endl;
-    //     }
-    // }
+    while (cin >> item1 >> item2) {
+        try {
+            sum = item1 + item2;
+        } catch (const isbn_mismatch& e) {
+            cerr << e.what() << ": left isbn(" << e.left
+                 << ") right isbn(" << e.right << ")" << endl;
+        }
+    }
 
     // Example of unnamed namespace usage.
     using local::i;
@@ -37,6 +37,7 @@ int main (void) {
     A::C obj;
     f(obj);    // no error
     // f2();       // error
+    #endif
 
     // TODO: verify - Exercise 18.18 - recursion.
     // TODO: Exercise 18.21

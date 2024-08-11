@@ -116,7 +116,7 @@ namespace local {
 namespace A {
     class C {
         friend void f2();           // won't be called unless defined
-        friend void f(const C&);    // will be called even without definition
+        friend void f(const C& obj) {}    // will be called even without definition
     };
 }
 

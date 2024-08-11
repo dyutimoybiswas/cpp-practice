@@ -14,6 +14,7 @@ using std::right;
 using std::setfill;
 
 int main () {
+    #ifdef CUSTOM
     tuple<size_t, size_t, size_t> test1;    // 3 members initialized to 0
     tuple<size_t, size_t, size_t> test2 = {1, 2, 3};
     cout << std::get<1>(test2) << endl;
@@ -60,9 +61,9 @@ int main () {
     cout << setfill(' ');   // restore default padding
 
     // Example of reading from istream bytewise.
-    // int ch;
-    // while ((ch = cin.get()) != EOF) {
-    //     // custom logic here.
-    // }
-    
+    int ch;
+    while ((ch = cin.get()) != EOF) {
+        // custom logic here.
+    }
+    #endif
 }

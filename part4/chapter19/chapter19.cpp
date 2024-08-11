@@ -14,6 +14,7 @@ int main(void) {
     // TODO: verify - Exercise 19.10 - a: A, b: A, c: B
 
     // Example of typeid
+    #ifdef CUSTOM
     Derived* dp = new Derived;
     Base* bp = dp;
     cout << typeid(bp).name() << endl;      // base
@@ -63,6 +64,7 @@ int main(void) {
 
     // Alternative way.
     find_if(begin(arr), end(arr), mem_fn(&string::empty));
+    #endif
 
     // TODO: Exercise 19.20
     
