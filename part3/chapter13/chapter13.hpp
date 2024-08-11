@@ -18,10 +18,10 @@ class HasPtr {
         HasPtr& operator=(const HasPtr&);
         HasPtr& operator=(HasPtr);      // passed by value
         friend void swap(HasPtr&, HasPtr&);
-        /*// Exercise 13.11
+        // Exercise 13.11
         ~HasPtr() {
             delete ps;
-        }*/
+        }
     private:
         std::string *ps;
         int i;

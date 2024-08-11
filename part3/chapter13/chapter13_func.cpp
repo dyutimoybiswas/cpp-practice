@@ -1,6 +1,7 @@
 #include "chapter13.hpp"
 
-/*HasPtr& HasPtr::operator=(const HasPtr& rhs) {
+#ifdef IMPL1
+HasPtr& HasPtr::operator=(const HasPtr& rhs) {
     // copy is done to prevent undefined behavior when lhs and rhs are the same object
     // i.e. when an object is assigned to itself.
     auto newp = new std::string(*rhs.ps);
@@ -9,7 +10,9 @@
     ps = newp;
     i = rhs.i;
     return *this;   // lhs
-}*/
+}
+
+#else
 HasPtr& HasPtr::operator=(const HasPtr& rhs) {
     ++*rhs.use; // increment ref count
     // if lhs = rhs, use will become 0. Then free members before copying.
@@ -23,6 +26,7 @@ HasPtr& HasPtr::operator=(const HasPtr& rhs) {
     use = rhs.use;
     return *this;
 }
+#endif
 
 // uses swap.
 HasPtr& HasPtr::operator=(HasPtr rhs) {
@@ -154,7 +158,8 @@ StrVec& StrVec::operator=(const StrVec& rhs) {
     return *this;
 }
 
-/*void StrVec::reallocate() {
+#ifdef IMPL1
+void StrVec::reallocate() {
     auto newCapacity = size() ? 2 * size() : 1;
     auto newData = alloc.allocate(newCapacity);
 
@@ -166,8 +171,9 @@ StrVec& StrVec::operator=(const StrVec& rhs) {
     elements = newData;
     first_free = dest;
     cap = elements + newCapacity;
-}*/
+}
 
+#else
 void StrVec::reallocate() {
     auto newCapacity = size() ? 2 * size() : 1;
     auto first = alloc.allocate(newCapacity);
@@ -179,6 +185,7 @@ void StrVec::reallocate() {
     first_free = last;
     cap = elements + newCapacity;
 }
+#endif
 
 // std::move doesn't throw exceptions
 StrVec::StrVec(StrVec&& s) noexcept: elements(s.elements), first_free(s.first_free), cap(s.cap) {

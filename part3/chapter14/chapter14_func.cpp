@@ -1,6 +1,6 @@
 #include "chapter14.hpp"
 #include "../chapter13/chapter13.hpp"    // for StrVec
-#include "../chapter12/chapter12.hpp"    // for StrBlobPtr
+#include "../../part2/chapter12/chapter12.hpp"    // for StrBlobPtr
 
 inline bool operator==(const Sales_data& lhs, const Sales_data& rhs) {
     return lhs.isbn() == rhs.isbn() && lhs.units_sold == rhs.units_sold 
@@ -89,12 +89,14 @@ StrBlobPtr& StrBlobPtr::operator--(int) {
 }
 
 // TODO: verify - Exercise 14.35
-// std::string LineReader::operator()() {
-//     std::string line;
-//     if (getline(ip, line))
-//         return line;
-//     return "";
-// }
+#ifdef EXERCISE35
+std::string LineReader::operator()() {
+    std::string line;
+    if (getline(ip, line))
+        return line;
+    return "";
+}
+#endif
 
 // TODO: verify - Exercise 14.36
 std::string LineReader::operator()() {

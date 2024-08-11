@@ -9,6 +9,7 @@ using std::end;
 using std::vector;
 
 int main (void) {
+    #ifdef CUSTOM
     // Example of function template usage.
     cout << compare(5, 6) << endl;
     cout << compare(-3.99, -4.1) << endl;
@@ -66,4 +67,5 @@ int main (void) {
     // Function template variadic params usage.
     print(cout, i, s, 24);  // 2nd - print(cout, s, 24), 3rd - print(cout, 24) - calls non-variadic version
     cout << endl;
+    #endif
 }
