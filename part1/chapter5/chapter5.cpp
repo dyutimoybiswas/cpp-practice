@@ -40,7 +40,7 @@ int main(void) {
     }
     #endif
 
-    // Excercise 5.14 - FIXME: recheck logic
+    // Excercise 5.14 - count max occurrence of consecutively repeated words
     #ifdef EXERCISE14
     string word, lastWord, maxWord;
     unsigned count = 0, maxCount = 0;
