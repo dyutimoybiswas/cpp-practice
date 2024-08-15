@@ -71,8 +71,8 @@ void printVector (const vector<int> &v, vector<int>::iterator it) {
     printVector(v, it+1);   // it++ will increment it in the previous stack location
 }
 
-// Excercise 6.36 - TODO: verify
-int (&bar(string s))[10] {}
+// Excercise 6.36
+string (&foo1())[10];
 
 // Excercise 6.42
 string make_plural(size_t ctr, const string &word, const string &ending) {
