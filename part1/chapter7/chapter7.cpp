@@ -27,7 +27,7 @@ struct X {
 
 int main(int argc, char const *argv[])
 {
-    // Exercise 7.10 - TODO: verify: determines whether both data1 & data2 have been read. 
+    // Exercise 7.10 - determines whether both data1 & data2 have been read. 
 
     // Exercise 7.27
     #ifdef EXERCISE27
@@ -47,9 +47,9 @@ int main(int argc, char const *argv[])
     // SalesData obj2 = obj1;  // invalid
     #endif
     
-    // Exercise 7.48 - TODO: verify
-    string null_isbn("9-999-99999-9");
+    // Exercise 7.48
     #ifdef EXERCISE48
+    string null_isbn("9-999-99999-9");
     // SalesData item1(null_isbn); // invalid
     // SalesData item2("9-999-99999-9");   //invalid
     #endif
