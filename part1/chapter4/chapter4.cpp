@@ -18,12 +18,11 @@ int main(void) {
     cout << (12/3*4+5*15+24%4/2) << endl;  // 16+75+0=91
     #endif
 
-    // Exercise 4.10 - TODO: check solution
+    // Exercise 4.10 
     #ifdef EXERCISE10
     int x;
     cout << "Enter numbers: ";
-    while (cin >> x) {
-        if (x == 42) break;
+    while (cin >> x && x != 42) {
         cout << x << " ";
     }
     cout << endl;
@@ -48,7 +47,7 @@ int main(void) {
     i = d = 3.5;    // 3 and 3.5
     #endif
 
-    // Exercise 4.19 - TODO: check solution
+    // Exercise 4.19
     #ifdef EXERCISE19
     int ival = -1;
     cout << (ival++ && ival) << endl;
