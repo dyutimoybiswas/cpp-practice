@@ -10,6 +10,9 @@ if [ $# -lt 3 ]; then
     if [ $1 -eq 1 ]; then
         if [ $# -lt 2 ]; then
             echo "Too few arguments. Please specify exercise no."
+        elif [ $2 = CUSTOM ]; then
+            g++ -std=c++20 -o output chapter1/*.cpp -D CUSTOM
+            ./output
         else
             EXERCISE=$2
             g++ -std=c++20 -o output chapter1/*.cpp -D "EXERCISE${EXERCISE} "
