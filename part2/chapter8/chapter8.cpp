@@ -1,8 +1,6 @@
 #include "chapter8.hpp"
 #include <fstream>
 #include <sstream>
-#include <string>
-#include <vector>
 
 using std::cin;
 using std::cout;
@@ -14,6 +12,7 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 using std::istringstream;
+using std::ostringstream;
 
 int main(int argc, char const *argv[])
 {
@@ -84,6 +83,23 @@ int main(int argc, char const *argv[])
     }
     #endif
 
+    // Example of ostringstream.
+    #ifdef CUSTOM
+    vector<PersonInfo> people = {{"riju", {"9843895550", "8240539463"}}, {"skd", {"01234", "8961051602"}}, {"sdk", {""}}};
+    for(const auto& entry: people) {
+        ostringstream formatted, badNums;   // invalid phones < 10 digits are stored in badNums, valid in formatted.
+        for(const auto& p: entry.phones) {
+            if(p.size() < 10)
+                badNums << p << ", ";
+            else
+                formatted << "+91-" << p << ", ";
+        }
+        if(!formatted.str().empty())
+            cout << entry.name << " has phones: " << formatted.str() << endl;
+        if(!badNums.str().empty())
+            cout << entry.name << " has invalid phones: " << badNums.str() << endl;
+    }
+    #endif
     // Exercise 8.14 - const because not modifying members, reference to prevent copying.
     return 0;
 }
