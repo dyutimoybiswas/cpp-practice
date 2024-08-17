@@ -26,5 +26,5 @@ void biggies (std::vector<std::string>& words, std::vector<std::string>::size_ty
     auto itr = std::partition(words.begin(), words.end(), [sz] (const std::string& word) { return word.size() >= sz; });
     std::cout << (itr - words.cbegin()) << " word(s) have size bigger than " << sz << std::endl;
     std::for_each(words.begin(), itr, [] (const std::string& s) {std::cout << (s + ", ");});
-    std::cout<<std::endl;
+    std::cout << std::endl;
 }

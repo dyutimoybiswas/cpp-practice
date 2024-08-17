@@ -7,6 +7,11 @@
 #include <string>
 #include <iterator>
 #include <functional>
+#include <fstream>
+
+const std::string inputFile = "/home/dyutimoy/repositories/cpp-primer-solutions/part2/chapter10/input.txt";
+const std::string oddsFile = "/home/dyutimoy/repositories/cpp-primer-solutions/part2/chapter10/odds.txt";
+const std::string evensFile = "/home/dyutimoy/repositories/cpp-primer-solutions/part2/chapter10/evens.txt";
 
 bool isShorter (const std::string&, const std::string&);
 

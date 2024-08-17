@@ -19,12 +19,14 @@ using std::placeholders::_1;
 using std::placeholders::_2;
 using std::ostream_iterator;
 using std::istream_iterator;
+using std::ifstream;
+using std::ofstream;
 
 int main(int argc, char const *argv[])
 {
     // Exercise 10.1
     #ifdef EXERCISE1
-    // FIXME: check logic. not asking for value to count.
+    // Enter 0 to stop elements input.
     vector<int> v1;
     cout << "Enter elements: ";
     int val;
@@ -72,7 +74,7 @@ int main(int argc, char const *argv[])
     // Exercise 10.13
     #ifdef EXERCISE13
     vector<string> w1 = {"test", "words", "sun", "is", "shining", "not"};
-    partition(w1.begin(), w1.end(), hasFiveOrMoreLetters);
+    partition(w1.begin(), w1.end(), hasFiveOrMoreLetters);  // moves elements satisfying predicate to beginning.
     for (const auto& s: w1)
         cout << s << " ";
     cout << endl;
@@ -124,15 +126,14 @@ int main(int argc, char const *argv[])
     // Exercise 10.20
     #ifdef EXERCISE20
     vector<string> vs1 = {"abcdef", "toilets", "test", "sentence", "boo"};
-    auto c = count_if(vs1.cbegin(), vs1.cend(), [](string w){return w.size() > 6;});
+    auto c = count_if(vs1.cbegin(), vs1.cend(), [](string w){ return w.size() > 6; });
     cout << c << " words are bigger than 6 characters." << endl;
     #endif
 
     // Exercise 10.21
     #ifdef EXERCISE21
     int x = 4;
-    // auto didBecomeZero = [&x] () -> bool {
-    auto didBecomeZero = [x] () mutable -> bool {
+    auto didBecomeZero = [&x] () -> bool {
         if (!x)
             return false;
         --x;
@@ -182,13 +183,47 @@ int main(int argc, char const *argv[])
     cout << endl;
     #endif
 
-    // Exercise 10.30, 10.33 - TODO:
+    // Exercise 10.30
+    #ifdef EXERCISE30
+    vector<int> nums;
+    decltype(nums.begin()) itr = nums.begin();
+    istream_iterator<int> ip_itr(cin), eof;
+    while(ip_itr != eof)
+        nums.push_back(*ip_itr++);
+    stable_sort(nums.begin(), nums.end());
+    ostream_iterator<int> op_itr(cout, ",");
+    copy(nums.cbegin(), nums.cend(), op_itr);
+    cout << endl;
+    #endif
+
+    // Exercise 10.33
+    #ifdef EXERCISE33
+    ifstream iFile;
+    ofstream oFile, eFile;
+    iFile.open(inputFile);
+    istream_iterator<int> ip_itr = iFile, eof;
+    int n;
+    oFile.open(oddsFile);
+    eFile.open(evensFile);
+    ostream_iterator<int> op_odd_itr(oFile, ",");
+    ostream_iterator<int> op_even_itr(eFile, ",");
+    while(ip_itr != eof) {
+        n = *ip_itr++;
+        if(n % 2)
+            *op_odd_itr++ = n;
+        else
+            *op_even_itr++ = n;
+    }
+    iFile.close();
+    oFile.close();
+    eFile.close();
+    #endif
 
     // Exercise 10.37
     #ifdef EXERCISE37
     vector<int>vi = {1,2,3,4,5,6,7,8,9,10};
     vector<int>vi1(5);      // NOTE: must specify destination vector size for copying
-    copy(vi.rbegin() + 3, vi.rbegin() + 8, vi1.begin());
+    copy(vi.rbegin() + 3, vi.rbegin() + 8, vi1.begin());    // rbegin(), or rbegin() + 0 points to 10.
     for (const auto& e: vi1)
         cout << e << " ";
     cout << endl;
