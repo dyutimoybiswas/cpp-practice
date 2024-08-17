@@ -7,6 +7,7 @@
 #include <list>
 #include <string>
 #include <forward_list>
+#include <cassert>
 
 bool isPresent (const std::vector<int>&, std::vector<int>::const_iterator, std::vector<int>::const_iterator, int);
 

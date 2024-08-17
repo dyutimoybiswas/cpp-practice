@@ -88,8 +88,9 @@ int main(int argc, char const *argv[])
     // Exercise 9.24
     #ifdef EXERCISE24
     vector<int>v1 = {1, 2, 3};
-    // FIXME: use assert to check that below items are equal instead of printing.
-    // cout << "First element: " << v1.at(0) << " " << v1[0] << " " << v1.front() << " " << *v1.begin() << endl;
+    assert(v1.at(0) == v1[0]);
+    assert(v1[0] == v1.front());
+    assert(v1.front() == *v1.begin());
     v1.clear();
     // cout << "First element: " << v1.at(0) << " " << v1[0] << " " << v1.front() << " " << *v1.begin() << endl; // error
     #endif
@@ -146,7 +147,7 @@ int main(int argc, char const *argv[])
             itr = v2.insert(itr, *itr); // duplicate element before itr, returns itr-1 (duplicated element index)
             itr += 2;   // advance beyond this element
         } else {
-            v2.erase(itr);  // erase *itr, returns itr+1
+            itr = v2.erase(itr);  // erase *itr, returns itr+1
         }
     }
     #endif
