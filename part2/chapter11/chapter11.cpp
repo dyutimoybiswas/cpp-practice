@@ -47,7 +47,7 @@ int main(int argc, char const *argv[])
     string fName, name;
     cout << "Enter family name: ";
     cin >> fName;
-    cout << endl << "Enter children names: ";
+    cout << "Enter children names: ";
     vector<string> cNames;
     while (cin >> name) {
         cNames.push_back(name);
@@ -98,7 +98,7 @@ int main(int argc, char const *argv[])
     }
     #endif
 
-    // Exercise 11.17 - TODO:
+    // Exercise 11.17 - all legal except b, because multiset doesn't have push_back(equivalent of back_inserter)
     // Exercise 11.18 - map<char, int>::const_iterator
 
     // Using return value of insert
@@ -114,15 +114,20 @@ int main(int argc, char const *argv[])
     #ifdef EXERCISE23
     multimap<string, vector<string>> fMap;
     string fName, name;
-    cout << "Enter family name: ";
-    cin >> fName;
-    cout << endl << "Enter children names: ";
-    vector<string> cNames;
-    while (cin >> name) {
-        cNames.push_back(name);
+    // stop when family name or child name is 'X'.
+    while(true) {
+        cout << "Enter family name: ";
+        cin >> fName;
+        if(fName == "X")
+            break;
+        cout << "Enter children names: ";
+        vector<string> cNames;
+        while (cin >> name && name != "X") {
+            cNames.push_back(name);
+        }
+        fMap.insert({fName, cNames});
+        cout << endl;
     }
-    fMap.insert({fName, cNames});
-    cout << endl;
     for (auto it = fMap.cbegin(); it != fMap.cend(); ++it) {
         cout << "Family name: " << it->first;
         for (auto& n: it->second)
