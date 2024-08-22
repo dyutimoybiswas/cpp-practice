@@ -22,6 +22,8 @@ void StrBlob::pop_back() {
     data->pop_back();
 }
 
+StrBlobPtr::StrBlobPtr(StrBlob& a, std::size_t sz = 0): wptr(a.data), curr(sz) {}
+
 std::shared_ptr<std::vector<std::string>> StrBlobPtr::check (std::size_t i, const std::string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
@@ -41,6 +43,10 @@ StrBlobPtr& StrBlobPtr::incr() {
     ++curr;
     return *this;
 }
+
+StrBlobPtr StrBlob::begin() { return StrBlobPtr(*this); }
+
+StrBlobPtr StrBlob::end() { return StrBlobPtr(*this, data->size()); }
 
 void runQueries (std::ifstream& infile) {
     TextQuery tq(infile);

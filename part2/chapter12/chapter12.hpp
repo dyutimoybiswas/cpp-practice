@@ -9,7 +9,9 @@
 #include <sstream>
 #include <initializer_list>
 
-// FIXME: check compilation errors.
+class StrBlob;
+typedef std::vector<std::string>::size_type size_type;
+
 class StrBlobPtr {
     private:
         std::shared_ptr<std::vector<std::string>> check (std::size_t, const std::string&) const;
@@ -17,7 +19,7 @@ class StrBlobPtr {
         std::size_t curr;   // position within the array
     public:
         StrBlobPtr(): curr(0) {}
-        StrBlobPtr(StrBlob& a, std::size_t sz = 0): wptr(a.data), curr(sz) {}
+        StrBlobPtr(StrBlob&, std::size_t);
         std::string& deref() const;
         StrBlobPtr& incr();
         inline std::string& operator*() const {
@@ -35,8 +37,6 @@ class StrBlobPtr {
         StrBlobPtr& operator--(int);
         
 };
-
-typedef std::vector<std::string>::size_type size_type;
 
 class StrBlob {
     friend class StrBlobPtr;
@@ -58,10 +58,8 @@ class StrBlob {
         std::string& back();
 
         // Pointer access
-        StrBlobPtr begin() { return StrBlobPtr(*this); }
-        StrBlobPtr end() {
-            return StrBlobPtr(*this, data->size());
-        }
+        StrBlobPtr begin();
+        StrBlobPtr end();
 };
 
 
