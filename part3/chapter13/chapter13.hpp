@@ -1,31 +1,59 @@
 #ifndef CHAPTER13_HPP
 #define CHAPTER13_HPP
 
-#include <iostream>
 #include <string>
 #include <set>
 #include <vector>
 #include <algorithm>
+#include <stdexcept>
 
-// Exercise 13.5 - TODO: verify
 class HasPtr {
     public:
         // each object's ps member will have its own copy of string s.
         HasPtr(const HasPtr& hp, const std::string& s = std::string(), int x = 0) 
         : ps(new std::string(s)), i(x), use(new std::size_t(1)) { }
+        
+        // Exercise 13.5
         HasPtr(const HasPtr& hp) 
-        : ps(hp.ps), i(hp.i), use(hp.use) { }
+        : ps(new std::string(*hp.ps)), i(hp.i), use(hp.use) { }
+
         HasPtr& operator=(const HasPtr&);
         HasPtr& operator=(HasPtr);      // passed by value
         friend void swap(HasPtr&, HasPtr&);
-        // Exercise 13.11
-        ~HasPtr() {
-            delete ps;
+
+        // move constructor.
+        HasPtr(HasPtr&& hp): ps(new std::string(*hp.ps)), i(hp.i), use(hp.use) {
+            hp.ps = nullptr;
+            hp.use = nullptr;
+            hp.i = 0;
         }
+
+        ~HasPtr();
     private:
         std::string *ps;
         int i;
         std::size_t* use;   // reference counter
+};
+
+// Exercise 13.18 & 13.19
+class Employee {
+    public:
+        Employee() { ++id; }
+        Employee(const std::string& n): name(n) { ++id; }
+
+        // without copy control below, id is not updated beyond 1 (corresponding to 1st created object).
+        Employee(const Employee& e): name(e.name) { ++id; }
+        Employee& operator=(const Employee& e){
+            this->name = e.name;
+            ++id;
+            return *this;
+        }
+
+        static unsigned int getID() { return id; }
+        std::string& getName() const { return const_cast<std::string&>(name); }
+    private:
+        std::string name;
+        static unsigned int id;
 };
 
 /**Example - copy control
@@ -37,6 +65,7 @@ class Folder;
 class Message {
     friend class Folder;
     friend void swap(Message&, Message&);
+    friend void swap(Folder&, Folder&);
     private:
         std::string contents;               // messages, etc
         std::set<Folder*> folders;          // folders holding this message
@@ -53,27 +82,34 @@ class Message {
         void save(Folder&);                     // store messages
         void remove(Folder&);                   // delete messages
 };
-// Exercise 13.36 - TODO: verify
+
+// Exercise 13.36
 class Folder {
+    friend class Message;
+    friend void swap(Message&, Message&);
+    friend void swap(Folder&, Folder&);
     private:
-        std::vector<Message*> msg;
+        std::set<Message*> msgs;
+        void addMsg(Message* msg) { msgs.insert(msg); }
+        void remMsg(Message* msg) { msgs.erase(msg); }
     public:
-        void addMsg(Message* m) {
-            msg.push_back(m);
-        }
-        void remMsg(Message* m) {
-            auto it = std::find(msg.cbegin(), msg.cend(), m);
-            if (it == msg.cend())
-                throw std::out_of_range("Message not found in folder!");
-            msg.erase(it);
-        }
+        Folder() = default;
+        Folder(const Folder&);
+        Folder& operator=(const Folder&);
+        ~Folder();
+        void save(Message&);
+        void remove(Message&);
 };
+
+using allocator_traits = std::allocator_traits<std::allocator<std::string>>;
 
 // Example - custom vector class
 class StrVec {
     private:
-        static std::allocator<std::string> alloc;
-        inline void check_and_allocate();   // adding elements, reallocate
+        static allocator_traits::allocator_type alloc;
+        inline void check_and_allocate(){   // adding elements, reallocate
+            if (size() == capacity()) reallocate();
+        }
         // utilized by copy constructor, assignment operator and destructor.
         std::pair<std::string*, std::string*> alloc_and_copy(const std::string*, const std::string*);
         void free();                // destroy elements and free space
@@ -86,8 +122,8 @@ class StrVec {
         StrVec(const StrVec&);
         StrVec& operator=(const StrVec&);
         StrVec& operator=(std::initializer_list<std::string>);
-        StrVec(StrVec&&);                // move constructor
-        StrVec& operator=(StrVec&&);     // move assignment
+        StrVec(StrVec&&) noexcept;                // move constructor
+        StrVec& operator=(StrVec&&) noexcept;     // move assignment
         inline ~StrVec() { free(); }
         void push_back(const std::string&);
         void push_back(const std::string&&);    // move element
@@ -102,15 +138,18 @@ class StrVec {
         inline std::string& operator[](std::size_t n) { return elements[n]; }
         inline std::string& operator[](std::size_t n) const { return elements[n]; }
 };
-std::allocator<std::string>StrVec::alloc;
-
 
 // Example - lvalue and rvalue reference member functions.
 class Foo {
     public:
-        Foo& operator=(const Foo&) &;   // assign only to modifiable lvalues.
+        Foo() = default;
+        Foo(std::vector<int> d): data(d) {}
+        Foo& operator=(const Foo&) &;   // result can only be an lvalue.
         Foo sorted() &&;        // run on modifiable rvalues
         Foo sorted() const &;   // run on any object
+        Foo& retFoo() & { return *this; }   // can only be invoked by lvalue
+        Foo retVal() { return *this; }
+        Foo retBar() && { return *this; }   // can only be invoked by rvalue
     private:
         std::vector<int> data;
 };

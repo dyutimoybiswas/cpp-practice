@@ -1,6 +1,7 @@
 #include "chapter13.hpp"
+#include <memory>
 
-#ifdef IMPL1
+#if 1
 HasPtr& HasPtr::operator=(const HasPtr& rhs) {
     // copy is done to prevent undefined behavior when lhs and rhs are the same object
     // i.e. when an object is assigned to itself.
@@ -28,6 +29,21 @@ HasPtr& HasPtr::operator=(const HasPtr& rhs) {
 }
 #endif
 
+#ifdef EXERCISE11
+HasPtr::~HasPtr() {
+    delete ps;
+}
+
+#else
+HasPtr::~HasPtr() {
+    // decrement ref count, and if it's 0, free resources.
+    if (--*use == 0) {
+        delete ps;
+        delete use;
+    }
+}
+#endif
+
 // uses swap.
 HasPtr& HasPtr::operator=(HasPtr rhs) {
     swap(*this, rhs);   // swaps lhs & rhs
@@ -37,14 +53,6 @@ HasPtr& HasPtr::operator=(HasPtr rhs) {
 inline void swap(HasPtr& lhs, HasPtr& rhs) {
     std::swap(lhs.ps, rhs.ps);
     std::swap(lhs.i, rhs.i);
-}
-
-HasPtr::~HasPtr() {
-    // decrement ref count, and if it's 0, free resources.
-    if (--*use == 0) {
-        delete ps;
-        delete use;
-    }
 }
 
 void Message::save(Folder& f) {
@@ -121,26 +129,68 @@ void swap(Message& lhs, Message& rhs) {
         f->addMsg(&rhs);
 }
 
+void swap(Folder& lhs, Folder& rhs) {
+    using std::swap;
+    for(auto& msg: lhs.msgs)
+        msg->folders.erase(&lhs);
+    for(auto& msg: rhs.msgs)
+        msg->folders.erase(&rhs);
+    swap(lhs.msgs, rhs.msgs);
+    for(auto& msg: lhs.msgs)
+        msg->folders.insert(&lhs);
+    for(auto& msg: rhs.msgs)
+        msg->folders.insert(&rhs);
+}
+
+Folder::Folder(const Folder& f): msgs(f.msgs) {
+    for(auto& msg: msgs)
+        msg->folders.insert(this);
+}
+
+Folder& Folder::operator=(const Folder& f) {
+    for(auto& msg: msgs)
+        msg->folders.erase(this);
+    this->msgs = f.msgs;
+    for(auto& msg: f.msgs)
+        msg->folders.insert(this);
+    return *this;
+}
+
+Folder::~Folder() {
+    for(auto& msg: msgs)
+        msg->folders.erase(this);
+}
+
+void Folder::save(Message& msg) {
+    addMsg(&msg);
+    msg.folders.insert(this);
+}
+
+void Folder::remove(Message& msg) {
+    remMsg(&msg);
+    msg.folders.erase(this);
+}
+
 void StrVec::push_back(const std::string& s) {
     check_and_allocate();               // ensure there is space
-    alloc.construct(first_free++, s);   // construct copy of s in first_free location.
+    allocator_traits::construct(alloc, first_free++, s);   // construct copy of s in first_free location.
 }
 
 void StrVec::push_back(const std::string&& s) {
     check_and_allocate();
-    alloc.construct(first_free++, std::move(s));
+    allocator_traits::construct(alloc, first_free++, std::move(s));
 }
 
 std::pair<std::string*, std::string*> StrVec::alloc_and_copy(const std::string* b, const std::string* e) {
-    auto data = alloc.allocate(e - b);  // add space
+    auto data = allocator_traits::allocate(alloc, e - b);  // add space
     return {data, std::uninitialized_copy(b, e, data)};
 }
 
 void StrVec::free() {
     if (elements) {     // nothing to free if no elements
         for (auto p = first_free; p != elements; /*empty*/)
-            alloc.destroy(--p);     // destroy in reverse order
-        alloc.deallocate(elements, cap - elements);
+            allocator_traits::destroy(alloc, --p);     // destroy in reverse order
+        allocator_traits::deallocate(alloc, elements, cap - elements);
     }
 }
 
@@ -158,15 +208,15 @@ StrVec& StrVec::operator=(const StrVec& rhs) {
     return *this;
 }
 
-#ifdef IMPL1
+#if 0
 void StrVec::reallocate() {
     auto newCapacity = size() ? 2 * size() : 1;
-    auto newData = alloc.allocate(newCapacity);
+    auto newData = allocator_traits::allocate(alloc, newCapacity);
 
     auto dest = newData;
     auto elem = elements;
     for (size_t i = 0; i != size(); ++i)
-        alloc.construct(dest++, std::move(*elem++));
+        allocator_traits::construct(alloc, dest++, std::move(*elem++));
     free();
     elements = newData;
     first_free = dest;
@@ -176,10 +226,10 @@ void StrVec::reallocate() {
 #else
 void StrVec::reallocate() {
     auto newCapacity = size() ? 2 * size() : 1;
-    auto first = alloc.allocate(newCapacity);
+    auto first = allocator_traits::allocate(alloc, newCapacity);
 
     // move the elements.
-    auto last = std::uninitialized_copy(std::make_move_iterator(begin), std::make_move_iterator(end), first);
+    auto last = std::uninitialized_copy(std::make_move_iterator(begin()), std::make_move_iterator(end()), first);
     free();
     elements = first;
     first_free = last;
@@ -202,6 +252,11 @@ StrVec& StrVec::operator=(StrVec&& rhs) noexcept {
         rhs.elements = rhs.first_free = rhs.cap = nullptr;
     }
     return *this;
+}
+
+// Exercise 13.51 - function returns rvalue.
+std::unique_ptr<int> clone(int p) {
+    return std::make_unique<int>(p);
 }
 
 // this is rvalue, so sorted in-place.
