@@ -13,6 +13,13 @@ class StrBlob;
 typedef std::vector<std::string>::size_type size_type;
 
 class StrBlobPtr {
+    // Chapter 14.
+    friend bool operator==(const StrBlobPtr&, const StrBlobPtr&);
+    friend bool operator!=(const StrBlobPtr&, const StrBlobPtr&);
+    friend bool operator<(const StrBlobPtr&, const StrBlobPtr&);
+    friend bool operator>(const StrBlobPtr&, const StrBlobPtr&);
+    friend bool operator<=(const StrBlobPtr&, const StrBlobPtr&);
+    friend bool operator>=(const StrBlobPtr&, const StrBlobPtr&);
     private:
         std::shared_ptr<std::vector<std::string>> check (std::size_t, const std::string&) const;
         std::weak_ptr<std::vector<std::string>> wptr;
@@ -35,11 +42,28 @@ class StrBlobPtr {
         // postfix - compiler supplies 0 as argument, not to be used.
         StrBlobPtr& operator++(int);
         StrBlobPtr& operator--(int);
-        
+        // Chapter 14
+        std::string& operator[](size_t n) { return (*wptr.lock())[n]; }
+        std::string& operator[](size_t n) const { return (*wptr.lock())[n]; }
+        StrBlobPtr operator+(const size_t);
+        StrBlobPtr operator-(const size_t);
+        StrBlobPtr operator-(const StrBlobPtr&);
+        StrBlobPtr& operator+=(const size_t);
+        StrBlobPtr& operator-=(const size_t);
+        StrBlobPtr& operator-=(const StrBlobPtr&);
+        std::string& operator*() const;
+        std::string* operator->() const;
 };
 
 class StrBlob {
     friend class StrBlobPtr;
+    // Chapter 14.
+    friend bool operator==(const StrBlob&, const StrBlob&);
+    friend bool operator!=(const StrBlob&, const StrBlob&);
+    friend bool operator<(const StrBlob&, const StrBlob&);
+    friend bool operator>(const StrBlob&, const StrBlob&);
+    friend bool operator<=(const StrBlob&, const StrBlob&);
+    friend bool operator>=(const StrBlob&, const StrBlob&);
     private:
         std::shared_ptr<std::vector<std::string>> data;
         void check (size_type, const std::string&) const;
@@ -60,6 +84,10 @@ class StrBlob {
         // Pointer access
         StrBlobPtr begin();
         StrBlobPtr end();
+
+        // Chapter 14
+        std::string& operator[](size_t n) { return (*data)[n]; }
+        std::string& operator[](size_t n) const { return (*data)[n]; }
 };
 
 

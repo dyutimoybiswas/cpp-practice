@@ -24,6 +24,9 @@ class Sales_data {
         Sales_data(unsigned int units = 0, double rev = 0.0, std::string bNo = "test-123"): 
         units_sold(units), revenue(rev), bookNo(bNo) { }
         Sales_data& operator+=(const Sales_data&);
+        // since arithmetic operators are defined, below overloads are NOT recommended.
+        explicit operator std::string() const { return bookNo; }
+        explicit operator double() const { return revenue; }
     
     private:
         inline std::string isbn() const { return bookNo; }
@@ -46,22 +49,9 @@ class PrintString {
 
 class LineReader {
     public:
-        LineReader(std::istream& is = std::cin): ip(is) { }
-        std::string operator()();
+        std::string operator()(std::istream& = std::cin);
     private:
-        std::istream& ip;
         std::vector<std::string> lines;
-};
-
-// Exercise 14.44
-struct divide {
-    int operator()(int dividend, int divisor) {
-        return dividend / divisor;  // assuming divisor is non-zero
-    }
-};
-int add(int, int);
-auto mod = [](int a, int b) -> int {
-    return a % b;   // assuming b is non-zero
 };
 
 // Example - class that stores integers between 0 and 255, both inclusive
@@ -74,6 +64,39 @@ class SmallInt {
         explicit operator int() const { return val; }
     private:
         std::size_t val;
+};
+
+// Exercise 14.34
+class MyClass {
+    public:
+        MyClass() = default;
+        MyClass(int v1, int v2, int v3): x(v1), y(v2), z(v3) {}
+        int operator()(int a, int b = 0, int c = 0) { return x == a ? y : z; }
+    private:
+        int x = 0;
+        int y = 0;
+        int z = 0;
+};
+
+// Exercise 14.37
+class CheckEquals {
+    public:
+        CheckEquals(int v): val(v) { }
+        bool operator()(int v) { return val == v; }
+    private:
+        int val;
+};
+
+// Exercise 14.38
+class CheckBounds {
+    public:
+        CheckBounds(int lb, int ub): lowerBound(lb), upperBound(ub) { }
+        bool operator()(const std::string& s) const {
+            return s.size() >= lowerBound && s.size() <= upperBound;
+        }
+    private:
+        int lowerBound;
+        int upperBound;
 };
 
 #endif

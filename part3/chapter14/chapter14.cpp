@@ -1,14 +1,21 @@
 #include "chapter14.hpp"
 #include <map>
 #include <functional>
+#include <algorithm>
+#include <fstream>
 
 using std::cout;
 using std::endl;
 using std::map;
+using std::vector;
+using std::replace_if;
+using std::string;
+using std::ifstream;
+using std::count_if;
 
 int main(void) {
-    // TODO: Exercise 14.1, 14.2
-    // TODO: verify - Exercise 14.3 - a, b, c, d: overloaded
+    // Exercise 14.1 - overloaded operators offer more flexibility than traditional operators wrt object types.
+    // Exercise 14.3 - a - builtin, b, c, d: overloaded
 
     // Example
     #ifdef CUSTOM
@@ -16,12 +23,20 @@ int main(void) {
     cout << data << endl;
     #endif
 
-    // TODO: Exercise 14.9, 14.10
+    // Exercise 14.10 - a: improper, b: works
+    #ifdef EXERCISE10
+    Sales_data s = {10, 24.95, "0-210-99999-9"};
+    cout << s << endl;
+    #endif
+
     // Exercise 14.11 - doesn't handle input failure
     // Exercise 14.14 - uses less resources (+= calling + uses extra object)
-    // TODO: Exercise 14.16, 14.18, 14.22, 14.26, 14.28
-    // TODO: verify - Exercise 14.29 - because object attributes are modified
-    // TODO: verify - Exercise 14.31 - StrBlobPtr(StrBlob& a,..) takes care of copy and assignment,
+    // Exercise 14.16 - TODO: String
+    // Exercise 14.18 - TODO: String
+    // Exercise 14.22 - copy and/or move assignment which is already synthesized for Sales_data.
+    // Exercise 14.26 - TODO: String
+    // Exercise 14.29 - because object attributes are modified
+    // Exercise 14.31 - StrBlobPtr(StrBlob& a,..) takes care of copy and assignment,
     // and default destructor frees curr. shared and weak pointers are deallocated automatically.
 
     // Example - overloaded call
@@ -33,9 +48,32 @@ int main(void) {
     errors(s);
     #endif
 
-    // TODO: verify - Exercise 14.33 - depends on arguments to be passed.
-    // TODO: Exercise 14.30, 14.34, 14.37, 14.38
+    // Exercise 14.33 - depends on arguments to be passed.
     
+    // Exercise 14.34
+    #ifdef EXERCISE34
+    MyClass m1(2, 3, 4);
+    cout << m1(3) << endl;  // prints 4
+    cout << m1(2) << endl;  // prints 3
+    #endif
+
+    // Exercise 14.37
+    #ifdef EXERCISE37
+    vector<int> v {0, 1, 0, 3, 0, 5, 0, 7};
+    replace_if(v.begin(), v.end(), CheckEquals(0), 8);  // create callable object that acts as predicate function.
+    #endif
+
+    // Exercise 14.38
+    #ifdef EXERCISE38
+    vector<string> words;
+    string word;
+    ifstream ip("/home/dyutimoy/repositories/cpp-primer-solutions/part3/chapter14/words.txt");
+    while (getline(ip, word)) {
+        words.push_back(word);
+    }
+    cout << count_if(words.cbegin(), words.cend(), CheckBounds(1, 10)) << endl;
+    #endif
+
     // Exercise 14.44
     #ifdef EXERCISE44
     map<std::string, std::function<int(int, int)>> ops = {
@@ -55,6 +93,5 @@ int main(void) {
     static_cast<int>(si) + 3.14; // si + 3.14;
     #endif
 
-    // TODO: Exercise 14.45
-    // TODO: verify - Exercise 14.47 - first converts to const int, second to int
+    // Exercise 14.47 - first converts to const int, second to int
 }

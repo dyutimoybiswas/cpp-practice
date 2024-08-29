@@ -105,6 +105,13 @@ using allocator_traits = std::allocator_traits<std::allocator<std::string>>;
 
 // Example - custom vector class
 class StrVec {
+    // Chapter 14.
+    friend bool operator==(const StrVec&, const StrVec&);
+    friend bool operator!=(const StrVec&, const StrVec&);
+    friend bool operator<(const StrVec&, const StrVec&);
+    friend bool operator>(const StrVec&, const StrVec&);
+    friend bool operator<=(const StrVec&, const StrVec&);
+    friend bool operator>=(const StrVec&, const StrVec&);
     private:
         static allocator_traits::allocator_type alloc;
         inline void check_and_allocate(){   // adding elements, reallocate
@@ -135,6 +142,7 @@ class StrVec {
         inline std::string* begin() const { return elements; }
         // pointer to one past last element.
         inline std::string* end() const { return first_free; }
+        // Chapter 14 - overloaded subscript.
         inline std::string& operator[](std::size_t n) { return elements[n]; }
         inline std::string& operator[](std::size_t n) const { return elements[n]; }
 };
