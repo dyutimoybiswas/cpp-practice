@@ -20,7 +20,7 @@ int main(void) {
     pitem->debug(); // prints Bulk_quote items
     #endif
 
-    // TODO: verify - Exercise 15.13 - print call inside derived print is recursive.
+    // Exercise 15.13 - print call inside derived print is recursive.
     // Exercise 15.14 - all object calls are compile time, all pointer and reference calls are runtime.
 
     #ifdef CUSTOM
@@ -29,7 +29,8 @@ int main(void) {
     #endif
 
     // Disc_quote obj;     // error
-    // TODO: Exercise 15.18, 15.19
+    // Exercise 15.18 - only valid for classes inheriting publicly.
+    // Exercise 15.19 - valid for all except Derived_from_Private
 
     #ifdef CUSTOM
     // pitem->discount_policy();   // error, member not present in class
@@ -53,6 +54,8 @@ int main(void) {
     cout << basket.back()->net_price(15) << endl;   // calls net_price of Bulk_quote, discount applied
     #endif
 
-    // TODO: Exercise 15.32, 15.38, 15.39, 15.40, 15.42
-
+    // TODO: Exercise 15.32, 15.39, 15.42
+    
+    // Exercise 15.38 - all operations return query objects and cannot be used to access class-specific members. all 3 are invalid.
+    // Exercise 15.40 - all valid cases, returns left/right/empty based on non-empty lhs and/or rhs.
 }

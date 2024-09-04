@@ -76,6 +76,30 @@ class Bulk_quote: public Disc_quote {
         // double discount = 0.0;   // overrides discount of Disc_quote
 };
 
+#ifdef EXERCISE18
+class Base {
+    public:
+        void pub_mem();
+    protected:
+        int prot_mem;
+    private:
+        char priv_mem;
+};
+
+struct Pub_Derv: public Base {
+    int f() { return prot_mem; }
+};
+
+struct Priv_Derv: private Base {
+    int f1() const { return prot_mem; }
+};
+
+struct Derived_from_Public: public Pub_Derv {
+    int use_base() { return prot_mem; }
+};
+
+struct Derived_from_Private: public Priv_Derv {};
+#else
 // Example of protected access.
 class Base {
     public:
@@ -84,6 +108,7 @@ class Base {
         int prot_mem;
         std::size_t n = 0;
 };
+#endif
 
 class Sneaky: public Base {
     inline friend void clobber(Sneaky& s) { s.j = s.prot_mem = 0; }
