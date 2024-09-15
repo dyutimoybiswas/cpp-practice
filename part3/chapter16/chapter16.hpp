@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <initializer_list>
+#include <list>
 #include <memory>
 #include <string>
 #include <sstream>
@@ -18,9 +19,19 @@ template<typename T> int compare(const T& v1, const T& v2) {
     return 0;       // equal
 }
 
-// TODO: verify - Exercise 16.7
-template<typename T> constexpr std::size_t size(const T* arr) {
-    return sizeof(arr) / sizeof(T);
+// Exercise 16.4
+template <typename Titer, typename Val>
+Titer myFind(Titer f, Titer l, const Val v) {
+    while (f != l)
+        if (*(f++) == v)
+            break;
+    return f;
+}
+
+// Exercise 16.7 - TODO: revise passing arrays as function args.
+template<typename T, size_t N>
+constexpr size_t size(T (&arr)[N]) {
+    return N;
 }
 
 // Example of class template.
@@ -74,6 +85,155 @@ template<typename T> Blob<T>::Blob(std::initializer_list<T> i1): data(std::make_
 template<typename T>
 template<typename It>
 Blob<T>::Blob(It b, It e): data(std::make_shared<std::vector<T>>(b, e)) {}
+
+// Exercise 16.16 - TODO: verify
+using allocator_traits = std::allocator_traits<std::allocator<std::string>>;
+template <typename T>
+class Vec {
+    template <class U> friend bool operator==(const Vec<U>&, const Vec<U>&);
+    template <class U> friend bool operator<(const Vec<U>&, const Vec<U>&);
+    public:
+        Vec(): elements(nullptr), first_free(nullptr), cap(nullptr) {}
+        Vec(const Vec<T>&);
+        Vec<T>& operator=(const Vec<T>&);
+        Vec<T>& operator=(std::initializer_list<T>);   // TODO:
+        Vec(Vec<T>&&) noexcept;                // move constructor
+        Vec<T>& operator=(Vec<T>&&) noexcept;     // move assignment
+        void push_back(const T&);
+        void push_back(const T&&);    // move element
+        // number of elements in use.
+        size_t size() const { return first_free - elements;}
+        // number of elements Vec can hold.
+        size_t capacity() const { return cap - elements;}
+        // pointer to first element.
+        T* begin() const { return elements; }
+        // pointer to one past last element.
+        T* end() const { return first_free; }
+        // Chapter 14 - overloaded subscript.
+        T& operator[](std::size_t n) { return elements[n]; }
+        T& operator[](std::size_t n) const { return elements[n]; }
+    private:
+        static allocator_traits::allocator_type alloc;
+        void check_and_allocate(){   // adding elements, reallocate
+            if (size() == capacity()) reallocate();
+        }
+        // utilized by copy constructor, assignment operator and destructor.
+        std::pair<T*, T*> alloc_and_copy(const T*, const T*);
+        void free();                // destroy elements and free space
+        void reallocate();          // get more space and copy existing elements
+        T* elements;      // pointer to first element
+        T* first_free;    // pointer to first free element
+        T* cap;            // pointer to one past the end
+};
+
+template <class U>
+bool operator==(const Vec<U>& sv1, const Vec<U>& sv2) {
+    // TODO: explore algorithms.
+    if (sv1.size() != sv2.size())
+        return false;
+    for (auto itr1 = sv1.elements, itr2 = sv2.elements; itr1 != sv1.first_free; ++itr1, ++itr2)
+        if (*itr1 != *itr2)
+            return false;
+    return true;
+}
+
+template <class U>
+bool operator<(const Vec<U>& sv1, const Vec<U>& sv2) {
+    // ref: https://cplusplus.com/reference/algorithm/lexicographical_compare/
+    auto itr1 = sv1.elements, itr2 = sv2.elements;
+    while(itr1 != sv1.first_free) {
+        if (itr1 == sv2.first_free || *itr2 < *itr1) return false;
+        else if(*itr1 < *itr2) return true;
+        ++itr1; ++itr2;
+    }
+    return itr2 != sv2.first_free;
+}
+
+template <typename T>
+Vec<T>::Vec(const Vec<T>& v) {
+    auto newData = alloc_and_copy(v.begin(), v.end());
+    elements = newData.first;
+    first_free = cap = newData.second;
+}
+
+template <typename T>
+Vec<T>& Vec<T>::operator=(const Vec<T>& rhs) {
+    auto newData = alloc_and_copy(rhs.begin(), rhs.end());
+    free();
+    elements = newData.first;
+    first_free = cap = newData.second;
+    return *this;
+}
+
+template <typename T>
+Vec<T>::Vec(Vec<T>&& v) noexcept: elements(v.elements), first_free(v.first_free), cap(v.cap) {
+    v.elements = v.first_free = v.cap = nullptr;    // safe to run destructor
+}
+
+template <typename T>
+Vec<T>& Vec<T>::operator=(Vec<T>&& rhs) noexcept {
+    if (this != &rhs) {  // guard against self-assignment
+        free();
+        elements = rhs.elements;
+        first_free = rhs.first_free;
+        cap = rhs.cap;
+        // safe to run destructor
+        rhs.elements = rhs.first_free = rhs.cap = nullptr;
+    }
+    return *this;
+}
+
+template <typename T>
+void Vec<T>::push_back(const T& t) {
+    check_and_allocate();               // ensure there is space
+    allocator_traits::construct(alloc, first_free++, t);   // construct copy of t in first_free location.
+}
+
+template <typename T>
+void Vec<T>::push_back(const T&& t) {
+    check_and_allocate();
+    allocator_traits::construct(alloc, first_free++, std::move(t));
+}
+
+template <typename T>
+void Vec<T>::free() {
+    if (elements) {     // nothing to free if no elements
+        for (auto p = first_free; p != elements; /*empty*/)
+            allocator_traits::destroy(alloc, --p);     // destroy in reverse order
+        allocator_traits::deallocate(alloc, elements, cap - elements);
+    }
+}
+
+#if 0
+template <typename T>
+void Vec<T>::reallocate() {
+    auto newCapacity = size() ? 2 * size() : 1;
+    auto newData = allocator_traits::allocate(alloc, newCapacity);
+
+    auto dest = newData;
+    auto elem = elements;
+    for (size_t i = 0; i != size(); ++i)
+        allocator_traits::construct(alloc, dest++, std::move(*elem++));
+    free();
+    elements = newData;
+    first_free = dest;
+    cap = elements + newCapacity;
+}
+
+#else
+template <typename T>
+void Vec<T>::reallocate() {
+    auto newCapacity = size() ? 2 * size() : 1;
+    auto first = allocator_traits::allocate(alloc, newCapacity);
+
+    // move the elements.
+    auto last = std::uninitialized_copy(std::make_move_iterator(begin()), std::make_move_iterator(end()), first);
+    free();
+    elements = first;
+    first_free = last;
+    cap = elements + newCapacity;
+}
+#endif
 
 // Example of template type aliases
 template<typename T> using twin = std::pair<T, T>;
