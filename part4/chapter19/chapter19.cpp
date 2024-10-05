@@ -64,10 +64,10 @@ int main(void) {
     // Example of converting a pointer to member function to a callable.
     function<bool (const string&)> fcn = &string::empty;
     string arr[] = {"a", "test", "", "array"};
-    find_if(begin(arr), end(arr), fcn);
+    bool f = find_if(begin(arr), end(arr), fcn);
 
-    // Alternative way.
-    find_if(begin(arr), end(arr), mem_fn(&string::empty));
+    // Alternate way.
+    f = find_if(begin(arr), end(arr), mem_fn(&string::empty));
     #endif
 
     // TODO: Exercise 19.20
