@@ -55,22 +55,24 @@ class Screen {
         // Example of function returning pointer to member.
         inline static const std::string Screen::*data() { return &Screen::contents; }
         // Example of pointer to member function tables.
-        Screen& home();
-        Screen& forward();
-        Screen& back();
-        Screen& up();
-        Screen& down();
+        Screen& home() { return *this; }
+        Screen& forward() { return *this; }
+        Screen& back() { return *this; }
+        Screen& up() { return *this; }
+        Screen& down() { return *this; }
         using Action = Screen& (Screen::*)();
         enum Directions { HOME, FORWARD, BACK, UP, DOWN};
         inline Screen& move(Directions d) {
             return (this->*Menu[d])();  // Menu[d] points to a member function.
         }
+        // Exercise 19.12
+        pos *cfoo() { return &cursor; }
     private:
         std::string contents = "some content";
         pos cursor;
         pos height, width;
         static constexpr Action Menu[] = {
-            &home, &forward, &back, &up, &down
+            &Screen::home, &Screen::forward, &Screen::back, &Screen::up, &Screen::down
         };   // function table
 };
 
@@ -81,10 +83,6 @@ class Token {
         Token(): tok(INT), ival(0) {}
         // TODO: move constructor, move assignment.
         Token(const Token& t): tok(t.tok) { copyUnion(t); }
-        ~Token() {
-            if (tok == STR)
-                sval.~string();     // other types are automatically destroyed.
-        }
         Token& operator=(const Token&);
         Token& operator=(const std::string&);
         Token& operator=(char);

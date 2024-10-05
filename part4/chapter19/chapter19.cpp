@@ -10,8 +10,10 @@ using std::end;
 using std::mem_fn;
 
 int main(void) {
-    // TODO: Exercise 19.3, 19.6
-    // TODO: verify - Exercise 19.10 - a: A, b: A, c: B
+    // Exercise 19.3 a: fail (dynamic cast works between A & C, fails to locate B)  19.6
+    // Exercise 19.3 b: fail (pb does not point to C)
+    // Exercise 19.3 c: fail (ambiguous inheritance: D->B->A and D->A)
+    // Exercise 19.10 - a: A, b: A, c: B
 
     // Example of typeid
     #ifdef CUSTOM
@@ -39,7 +41,9 @@ int main(void) {
     cout << myScreen.*pdata << endl;
     
     // Exercise 19.11 - ordinary pointer can point to any object/variable.
-    // TODO: Exercise 19.12
+    
+    // Exercise 19.12
+    cout << "Cursor = " << *myScreen.cfoo() << endl;
 
     // Example of pointer to member functions.
     auto (Screen::*p1)(Screen::pos, Screen::pos) const = &Screen::get;
@@ -55,7 +59,7 @@ int main(void) {
     myScreen.move(Screen::HOME);    // invokes home
     myScreen.move(Screen::DOWN);    // invokes down
 
-    // TODO: verify - Example 19.14 - legal.
+    // Example 19.14 - legal.
     
     // Example of converting a pointer to member function to a callable.
     function<bool (const string&)> fcn = &string::empty;
