@@ -38,3 +38,10 @@ namespace cplusplus_primer {
     // implicitly uses Bear's default constructor.
     Panda::Panda(): Endangered(Endangered::critical) {}
 }
+
+// Exercise 18.14
+namespace mathlib {
+    namespace matrixLib {
+        matrix operator*(const matrix& m1, const matrix& m2) { return matrix(); }
+    }
+}

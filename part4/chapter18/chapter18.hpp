@@ -120,4 +120,11 @@ namespace A {
     };
 }
 
+namespace mathlib {
+    namespace matrixLib {
+        class matrix {};
+        matrix operator*(const matrix&, const matrix&);
+    }
+}
+
 #endif
