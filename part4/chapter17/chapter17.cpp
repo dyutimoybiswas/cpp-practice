@@ -19,7 +19,7 @@ int main () {
     tuple<size_t, size_t, size_t> test2 = {1, 2, 3};
     cout << std::get<1>(test2) << endl;
 
-    // TODO: Exercise 17.8
+    // Exercise 17.8 - since constructor has default args, object with default values will be used as initial.
 
     // Example of bitset.
     bitset<20> bitvec1(0xbeef);     // 00001011111011101111
