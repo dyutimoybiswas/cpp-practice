@@ -45,7 +45,7 @@ HasPtr::~HasPtr() {
 #endif
 
 // uses swap.
-HasPtr& HasPtr::operator=(HasPtr rhs) {
+HasPtr& HasPtr::operator=(HasPtr&& rhs) noexcept {
     swap(*this, rhs);   // swaps lhs & rhs
     return *this;       // returns lhs, rhs is destroyed as control goes out of scope.
 }
@@ -94,14 +94,14 @@ Message::~Message() {
     removeFromFolders();
 }
 
-Message::Message(Message&& m): contents(std::move(m.contents)) {
+Message::Message(Message&& m) noexcept : contents(m.contents) {
     moveFolders(&m);
 }
 
-Message& Message::operator=(Message&& rhs) {
-    if (this != &rhs) {         // check for self-assignment
+Message& Message::operator=(Message&& rhs) noexcept {
+    if (this != &rhs) {              // check for self-assignment
         removeFromFolders();
-        contents = std::move(rhs.contents);     // move assignment
+        contents = rhs.contents;     // move assignment
         moveFolders(&rhs);
     }
     return *this;

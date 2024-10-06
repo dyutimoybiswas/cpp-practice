@@ -1,5 +1,4 @@
 #include "chapter13.hpp"
-#include <iostream>
 
 using std::cout;
 using std::cin;
@@ -18,6 +17,18 @@ int main(int argc, char const *argv[])
     // Exercise 13.12 - 3: item1, item2, accum
     // Exercise 13.14 - same output for all 3 as mysn is copied around.
     // Exercise 13.15 - doesn't change output, same as above.
+
+    #ifdef CUSTOM
+    HasPtr hp1, hp2(hp1);   // copy constructor.
+    HasPtr&& hp3 = std::move(hp1);
+    HasPtr hp4(std::move(hp1)); // move constructor. Note that Hasptr hp4(hp3) will invoke copy cons.
+    hp4 = hp1;                  // copy assignment. Note that this is invoked on already existing object. Hasptr hp4 = hp1 invokes copy cons.
+    hp4 = std::move(hp2);       // move assignment. Note that this is invoked on already existing object. Hasptr hp4 = hp3 invokes copy assgn.
+
+    // MyClass m1 = 10;     // fails when constructor is explicit.
+    MyClass m2(15);
+    // MyClass mc('x');     // fails
+    #endif
 
     // Exercise 13.18
     #ifdef EXERCISE18

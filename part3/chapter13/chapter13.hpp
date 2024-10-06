@@ -6,11 +6,12 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 
 class HasPtr {
     public:
         // each object's ps member will have its own copy of string s.
-        HasPtr(const HasPtr& hp, const std::string& s = std::string(), int x = 0) 
+        HasPtr(const std::string& s = std::string(), int x = 0) 
         : ps(new std::string(s)), i(x), use(new std::size_t(1)) { }
         
         // Exercise 13.5
@@ -18,15 +19,11 @@ class HasPtr {
         : ps(new std::string(*hp.ps)), i(hp.i), use(hp.use) { }
 
         HasPtr& operator=(const HasPtr&);
-        HasPtr& operator=(HasPtr);      // passed by value
+        HasPtr& operator=(HasPtr&&) noexcept;      // move assignment.
         friend void swap(HasPtr&, HasPtr&);
 
         // move constructor.
-        HasPtr(HasPtr&& hp): ps(new std::string(*hp.ps)), i(hp.i), use(hp.use) {
-            hp.ps = nullptr;
-            hp.use = nullptr;
-            hp.i = 0;
-        }
+        HasPtr(HasPtr&& hp) noexcept : ps(new std::string(*hp.ps)), i(hp.i), use(hp.use) { }
 
         ~HasPtr();
     private:
@@ -43,7 +40,7 @@ class Employee {
 
         // without copy control below, id is not updated beyond 1 (corresponding to 1st created object).
         Employee(const Employee& e): name(e.name) { ++id; }
-        Employee& operator=(const Employee& e){
+        Employee& operator=(const Employee& e) {
             this->name = e.name;
             ++id;
             return *this;
@@ -54,6 +51,17 @@ class Employee {
     private:
         std::string name;
         static unsigned int id;
+};
+
+// Example of explicit constructors.
+class MyClass {
+    public:
+        MyClass() = default;
+        // MyClass (int member): mem(member) { }        // this allows initialization like - MyClass m = 10;
+        explicit MyClass (int member): mem(member) { }  // this doesn't
+        MyClass(char) = delete;                         // prevents type conversion from char to int
+    private:
+        int mem;
 };
 
 /**Example - copy control
@@ -77,10 +85,10 @@ class Message {
         Message(const Message&);                // copy constructor
         Message& operator=(const Message&);     // copy assignment
         ~Message();                             // destructor
-        Message(Message&&);                     // move constructor
-        Message& operator=(Message&&);          // move assignment
-        void save(Folder&);                     // store messages
-        void remove(Folder&);                   // delete messages
+        Message(Message&&) noexcept;            // move constructor
+        Message& operator=(Message&&) noexcept; // move assignment
+        void save(Folder&);                     // store messages in folders
+        void remove(Folder&);                   // delete messages from folders
 };
 
 // Exercise 13.36
@@ -89,11 +97,12 @@ class Folder {
     friend void swap(Message&, Message&);
     friend void swap(Folder&, Folder&);
     private:
+        std::string name;
         std::set<Message*> msgs;
         void addMsg(Message* msg) { msgs.insert(msg); }
         void remMsg(Message* msg) { msgs.erase(msg); }
     public:
-        Folder() = default;
+        Folder(const std::string& n = "test"): name(n) { }
         Folder(const Folder&);
         Folder& operator=(const Folder&);
         ~Folder();
