@@ -254,6 +254,80 @@ StrVec& StrVec::operator=(StrVec&& rhs) noexcept {
     return *this;
 }
 
+std::pair<char*, char*> String::allocate_and_copy(const char* b, const char* e) {
+    char* data = char_allocator_traits::allocate(alloc, e - b);
+    return std::make_pair(data, std::uninitialized_copy(b, e, data));
+}
+
+void String::free() {
+    if (elements) {
+        for (char* p = elements; p != first_free; char_allocator_traits::destroy(alloc, p++));
+        char_allocator_traits::deallocate(alloc, elements, capacity());
+    }
+}
+
+void String::reallocate() {
+    size_t newCapacity = size() ? 2 * size() : 1;
+    char* newData = char_allocator_traits::allocate(alloc, newCapacity);
+
+    char* e = elements;
+    char* dest = newData;
+    while (e != first_free)
+        char_allocator_traits::construct(alloc, dest++, std::move(*e++));
+
+    free();     // deallocate current memory
+    elements = newData;
+    first_free = dest;      // should be allocated wrt newData.
+    cap = elements + newCapacity;
+}
+
+String::String(const char* s) {
+    size_t len = 0;
+    while (s[len]) ++len;
+    auto newData = allocate_and_copy(s, s + len);
+    elements = newData.first;
+    cap = first_free = newData.second;
+}
+
+String::String(std::initializer_list<char> il) {
+    auto newData = allocate_and_copy(il.begin(), il.end());
+    elements = newData.first;
+    cap = first_free = newData.second;
+}
+
+// Exercise 13.47
+String::String(const String& s) {
+    auto newData = allocate_and_copy(s.begin(), s.end());
+    elements = newData.first;
+    cap = first_free = newData.second;
+}
+
+// Exercise 13.49
+String::String(String&& s) noexcept: elements(s.elements), first_free(s.first_free), cap(s.cap) {
+    s.elements = s.first_free = s.cap = nullptr;
+}
+
+// Exercise 13.47
+String& String::operator=(const String& s) {
+    auto newData = allocate_and_copy(s.begin(), s.end());
+    free();
+    elements = newData.first;
+    cap = first_free = newData.second;
+    return *this;
+}
+
+// Exercise 13.49
+String& String::operator=(String&& s) noexcept {
+    if (this != &s) {
+        free();
+        elements = s.elements;
+        first_free = s.first_free;
+        cap = s.cap;
+        s.elements = s.first_free = s.cap = nullptr;
+    }
+    return *this;
+}
+
 // Exercise 13.51 - function returns rvalue.
 std::unique_ptr<int> clone(int p) {
     return std::make_unique<int>(p);

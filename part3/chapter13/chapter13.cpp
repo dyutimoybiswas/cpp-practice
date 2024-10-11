@@ -7,6 +7,7 @@ using std::endl;
 // static member definitions.
 unsigned int Employee::id = 0;
 allocator_traits::allocator_type StrVec::alloc;
+char_allocator_traits::allocator_type String::alloc;
 
 int main(int argc, char const *argv[])
 {
@@ -65,6 +66,24 @@ int main(int argc, char const *argv[])
     // Exercise 13.56 - calls the enclosing function, resulting in infinite recursion
     // Exercise 13.57 - normal (expected) operation
     
+    // Example.
+    #ifdef CUSTOM
+    String s1("abc");
+    cout << s1.peek() << endl;
+    String s2 = {'d', 'e', 'f'};
+    cout << s2.peek() << endl;
+    String s3 = s1;
+    cout << s3.peek() << endl;
+    String s4 = std::move(s2);
+    cout << s4.peek() << endl;
+    s3 = s4;
+    cout << s3.peek() << endl;
+    s4 = std::move(s4);         // self-assignment test
+    cout << s4.peek() << endl;
+    s4 = std::move(s1);
+    cout << s4.peek() << endl;
+    #endif
+
     // Example.
     #ifdef CUSTOM
     Foo obj1;
