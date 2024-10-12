@@ -124,37 +124,42 @@ class StrVec {
     friend bool operator>=(const StrVec&, const StrVec&);
     private:
         static allocator_traits::allocator_type alloc;
-        inline void check_and_allocate(){   // adding elements, reallocate
+        void check_and_allocate(){   // adding elements, reallocate
             if (size() == capacity()) reallocate();
         }
         // utilized by copy constructor, assignment operator and destructor.
         std::pair<std::string*, std::string*> alloc_and_copy(const std::string*, const std::string*);
         void free();                // destroy elements and free space
         void reallocate();          // get more space and copy existing elements
-        std::string* elements;      // pointer to first element
-        std::string* first_free;    // pointer to first free element
-        std::string* cap;            // pointer to one past the end
+        std::string* elements {nullptr};      // pointer to first element
+        std::string* first_free {nullptr};    // pointer to first free element
+        std::string* cap {nullptr};           // pointer to one past the end
     public:
-        StrVec(): elements(nullptr), first_free(nullptr), cap(nullptr) {}
+        StrVec() = default;
         StrVec(const StrVec&);
+        StrVec(std::initializer_list<std::string>);
         StrVec& operator=(const StrVec&);
-        StrVec& operator=(std::initializer_list<std::string>);
         StrVec(StrVec&&) noexcept;                // move constructor
         StrVec& operator=(StrVec&&) noexcept;     // move assignment
-        inline ~StrVec() { free(); }
+        ~StrVec() { free(); }
         void push_back(const std::string&);
         void push_back(const std::string&&);    // move element
+        void pop_back();
         // number of elements in use.
-        inline size_t size() const { return first_free - elements;}
-        // number of elements StrVec can hold.
-        inline size_t capacity() const { return cap - elements;}
+        size_t size() const { return first_free - elements;}
         // pointer to first element.
-        inline std::string* begin() const { return elements; }
+        std::string* begin() const { return elements; }
         // pointer to one past last element.
-        inline std::string* end() const { return first_free; }
+        std::string* end() const { return first_free; }
+        // Exercise 13.39
+        void reserve(size_t);
+        size_t capacity() const { return cap - elements; }    // number of elements StrVec can hold.
+        void resize(size_t, std::string&& = "");
         // Chapter 14 - overloaded subscript.
-        inline std::string& operator[](std::size_t n) { return elements[n]; }
-        inline std::string& operator[](std::size_t n) const { return elements[n]; }
+        std::string& operator[](std::size_t n) { return elements[n]; }
+        std::string& operator[](std::size_t n) const { return elements[n]; }
+
+        void peek() { for (auto p = begin(); p != end(); ++p) std::cout << *p << std::endl; }    // debug
 };
 
 // Exercise 13.44 - custom string class
@@ -162,9 +167,9 @@ class String {
     private:
         using iterator = char*;
         using const_iterator = const char*;
-        char* elements;     // current position
-        char* first_free;   // one past last assigned
-        char* cap;          // last position of allocated memory
+        char* elements {nullptr};     // current position
+        char* first_free {nullptr};   // one past last assigned
+        char* cap {nullptr};          // last position of allocated memory
         static char_allocator_traits::allocator_type alloc;
         void check_and_allocate() { if (size() == capacity()) reallocate(); }
         void free();                // destroy elements and free space
@@ -186,11 +191,10 @@ class String {
         // modifiers.
         size_t size() const noexcept { return first_free - elements; }
         size_t capacity() const noexcept { return cap - elements; }
-        void resize(size_t);
-        void resize(size_t, char);
-        void reserve(size_t=0);
+        void resize(size_t, char=' ');
+        void reserve(size_t);
         bool empty() const noexcept { return elements == first_free; }
-        void push_back(char);
+        void push_back(const char);
         void pop_back();
 
         // iterators.
@@ -199,7 +203,7 @@ class String {
         const_iterator cbegin() const noexcept { return const_cast<char*>(elements); }
         const_iterator cend() const noexcept { return const_cast<char*>(first_free); }
 
-        char* peek() { return elements; }   // debug
+        void peek() { for (char* p = elements; p != first_free; ++p) std::cout << *p << std::endl; }   // debug
 };
 
 // Example - lvalue and rvalue reference member functions.

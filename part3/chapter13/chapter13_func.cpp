@@ -173,7 +173,7 @@ void Folder::remove(Message& msg) {
 
 void StrVec::push_back(const std::string& s) {
     check_and_allocate();               // ensure there is space
-    allocator_traits::construct(alloc, first_free++, s);   // construct copy of s in first_free location.
+    allocator_traits::construct(alloc, first_free++, s);   // construct copy of s in first_free location. TODO: why not std::move(s)?
 }
 
 void StrVec::push_back(const std::string&& s) {
@@ -181,15 +181,24 @@ void StrVec::push_back(const std::string&& s) {
     allocator_traits::construct(alloc, first_free++, std::move(s));
 }
 
+void StrVec::pop_back() {
+    if (size())
+        allocator_traits::destroy(alloc, --first_free);
+}
+
 std::pair<std::string*, std::string*> StrVec::alloc_and_copy(const std::string* b, const std::string* e) {
     auto data = allocator_traits::allocate(alloc, e - b);  // add space
-    return {data, std::uninitialized_copy(b, e, data)};
+    return {data, std::uninitialized_copy(b, e, data)};    // std::uninitialized_copy returns pointer to last element of data.
 }
 
 void StrVec::free() {
     if (elements) {     // nothing to free if no elements
+        #ifdef EXERCISE43
+        std::for_each(elements, first_free, [](std::string* p) { allocator_traits::destroy(alloc, p); })
+        #else
         for (auto p = first_free; p != elements; /*empty*/)
-            allocator_traits::destroy(alloc, --p);     // destroy in reverse order
+            allocator_traits::destroy(alloc, --p);     // destroy in reverse order. Tip: this can be 3rd part of for loop.
+        #endif
         allocator_traits::deallocate(alloc, elements, cap - elements);
     }
 }
@@ -202,10 +211,16 @@ StrVec::StrVec(const StrVec& s) {
 
 StrVec& StrVec::operator=(const StrVec& rhs) {
     auto newData = alloc_and_copy(rhs.begin(), rhs.end());
-    free();
+    free();         // protection against self-assignment.
     elements = newData.first;
     first_free = cap = newData.second;
     return *this;
+}
+
+// Exercise 13.40
+StrVec::StrVec(std::initializer_list<std::string> il) {
+    for (const std::string& e: il)
+        push_back(e);
 }
 
 #if 0
@@ -214,7 +229,7 @@ void StrVec::reallocate() {
     auto newData = allocator_traits::allocate(alloc, newCapacity);
 
     auto dest = newData;
-    auto elem = elements;
+    auto elem = elements;       // next element in the old array.
     for (size_t i = 0; i != size(); ++i)
         allocator_traits::construct(alloc, dest++, std::move(*elem++));
     free();
@@ -254,6 +269,27 @@ StrVec& StrVec::operator=(StrVec&& rhs) noexcept {
     return *this;
 }
 
+// Exercise 13.39
+void StrVec::reserve(size_t n) {
+    if (n > capacity()) {
+        auto newData = allocator_traits::allocate(alloc, n);
+        auto first_free_new = std::uninitialized_copy(elements, first_free, newData);   // wrt newData
+        free();
+        elements = newData;
+        first_free = first_free_new;
+        cap = elements + n;
+    }
+}
+
+void StrVec::resize(size_t n, std::string&& val) {
+    if (n > size())
+        for (size_t i = size(); i < n; ++i)
+            push_back(val);
+    else if (n < size())
+        for (size_t i = size(); i > n; --i)
+            pop_back();
+}
+
 std::pair<char*, char*> String::allocate_and_copy(const char* b, const char* e) {
     char* data = char_allocator_traits::allocate(alloc, e - b);
     return std::make_pair(data, std::uninitialized_copy(b, e, data));
@@ -282,6 +318,7 @@ void String::reallocate() {
 }
 
 String::String(const char* s) {
+    std::cout << "C style string constructor" << std::endl;
     size_t len = 0;
     while (s[len]) ++len;
     auto newData = allocate_and_copy(s, s + len);
@@ -297,6 +334,7 @@ String::String(std::initializer_list<char> il) {
 
 // Exercise 13.47
 String::String(const String& s) {
+    std::cout << "copy constructor" << std::endl;
     auto newData = allocate_and_copy(s.begin(), s.end());
     elements = newData.first;
     cap = first_free = newData.second;
@@ -304,11 +342,13 @@ String::String(const String& s) {
 
 // Exercise 13.49
 String::String(String&& s) noexcept: elements(s.elements), first_free(s.first_free), cap(s.cap) {
+    std::cout << "move constructor" << std::endl;       // Exercise 13.50
     s.elements = s.first_free = s.cap = nullptr;
 }
 
 // Exercise 13.47
 String& String::operator=(const String& s) {
+    std::cout << "copy assignment" << std::endl;
     auto newData = allocate_and_copy(s.begin(), s.end());
     free();
     elements = newData.first;
@@ -318,6 +358,7 @@ String& String::operator=(const String& s) {
 
 // Exercise 13.49
 String& String::operator=(String&& s) noexcept {
+    std::cout << "move assignment" << std::endl;       // Exercise 13.50
     if (this != &s) {
         free();
         elements = s.elements;
@@ -326,6 +367,36 @@ String& String::operator=(String&& s) noexcept {
         s.elements = s.first_free = s.cap = nullptr;
     }
     return *this;
+}
+
+void String::push_back(const char ch) {
+    check_and_allocate();
+    char_allocator_traits::construct(alloc, first_free++, ch);
+}
+
+void String::pop_back() {
+    if (size())
+        char_allocator_traits::destroy(alloc, --first_free);
+}
+
+void String::reserve(size_t n) {
+    if (n > capacity()) {
+        char* newData = char_allocator_traits::allocate(alloc, n);
+        char* first_free_new = std::uninitialized_copy(elements, first_free, newData);
+        free();
+        elements = newData;
+        first_free = first_free_new;
+        cap = elements + n;
+    }
+}
+
+void String::resize(size_t n, char ch) {
+    if (n > size())
+        for (size_t i = size(); i < n; ++i)
+            push_back(ch);
+    else if (n < size())
+        for (size_t i = size(); i > n; --i)
+            pop_back();
 }
 
 // Exercise 13.51 - function returns rvalue.

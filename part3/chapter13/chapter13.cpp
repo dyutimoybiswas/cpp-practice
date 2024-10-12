@@ -3,6 +3,7 @@
 using std::cout;
 using std::cin;
 using std::endl;
+using std::vector;
 
 // static member definitions.
 unsigned int Employee::id = 0;
@@ -59,29 +60,63 @@ int main(int argc, char const *argv[])
     #endif
 
     // Exercise 13.38 - more work needed in implementing swap.
-    // Exercise 13.39 till 13.44 - TODO:
+    // Exercise 13.41 - ++first_free results in garbage value for first element, and capacity is reached when (cap - 1) elements have been actually pushed.
+    // TODO: Exercise 13.42
     // Exercise 13.45 - lvalue ref(&) can be used on lvalues (modifiable) while rvalue ref(&&) can be used on rvalues (const/variable op const/std::move(variable))
     // Exercise 13.46 - &&, &, &, &&
-    // Exercise 13.47, 13.48, 13.50 - TODO:
     // Exercise 13.56 - calls the enclosing function, resulting in infinite recursion
     // Exercise 13.57 - normal (expected) operation
+
+    // Exercise 13.39
+    #ifdef EXERCISE39
+    StrVec s = {"this", "is", "the", "test", "string", "vector"};
+    s.reserve(10);
+    s.resize(2); s.resize(6, "ppap");
+    s.peek();
+    #endif
     
     // Example.
     #ifdef CUSTOM
     String s1("abc");
-    cout << s1.peek() << endl;
+    s1.peek();
     String s2 = {'d', 'e', 'f'};
-    cout << s2.peek() << endl;
+    s2.peek();
     String s3 = s1;
-    cout << s3.peek() << endl;
+    s3.peek();
     String s4 = std::move(s2);
-    cout << s4.peek() << endl;
+    s4.peek();
     s3 = s4;
-    cout << s3.peek() << endl;
+    s3.peek();
     s4 = std::move(s4);         // self-assignment test
-    cout << s4.peek() << endl;
+    s4.peek();
     s4 = std::move(s1);
-    cout << s4.peek() << endl;
+    s4.peek();
+    String s5("test");
+    s5.reserve(8);
+    cout << "size = " << s5.size() << ", capacity = " << s5.capacity() << std::endl;
+    s5.peek();
+    s5.resize(3);
+    s5.peek();
+    s5.resize(7, 'x');
+    s5.peek();
+    #endif
+
+    // Exercise 13.48
+    #ifdef EXERCISE48
+    vector<String> v = {"jkl", "mno", "pqrs"};  // C style string constructor x4
+    String tuv = "tuv", wxyz("wxyz");   // C style string constructor x2
+    v.push_back(tuv);       // copy constructor
+    v.push_back(wxyz);      // copy constructor
+    v.push_back("0123");    // C style string constructor
+    #endif
+
+    // Exercise 13.50 - TODO: why is "move constructor" printed multiple times?
+    #ifdef EXERCISE50
+    vector<String> v = {"jkl", "mno", "pqrs"};  // C style string constructor x4
+    String tuv = "tuv", wxyz("wxyz");   // C style string constructor x2
+    v.push_back(std::move(tuv));       // move constructor
+    v.push_back(wxyz);      // copy constructor
+    v.push_back("0123");    // C style string constructor
     #endif
 
     // Example.
