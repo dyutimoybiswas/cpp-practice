@@ -115,13 +115,6 @@ using char_allocator_traits = std::allocator_traits<std::allocator<char>>;
 
 // Example - custom vector class
 class StrVec {
-    // Chapter 14.
-    friend bool operator==(const StrVec&, const StrVec&);
-    friend bool operator!=(const StrVec&, const StrVec&);
-    friend bool operator<(const StrVec&, const StrVec&);
-    friend bool operator>(const StrVec&, const StrVec&);
-    friend bool operator<=(const StrVec&, const StrVec&);
-    friend bool operator>=(const StrVec&, const StrVec&);
     private:
         static allocator_traits::allocator_type alloc;
         void check_and_allocate(){   // adding elements, reallocate
@@ -155,9 +148,6 @@ class StrVec {
         void reserve(size_t);
         size_t capacity() const { return cap - elements; }    // number of elements StrVec can hold.
         void resize(size_t, std::string&& = "");
-        // Chapter 14 - overloaded subscript.
-        std::string& operator[](std::size_t n) { return elements[n]; }
-        std::string& operator[](std::size_t n) const { return elements[n]; }
 
         void peek() { for (auto p = begin(); p != end(); ++p) std::cout << *p << std::endl; }    // debug
 };
