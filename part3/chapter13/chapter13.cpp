@@ -11,9 +11,7 @@ allocator_traits::allocator_type StrVec::alloc;
 char_allocator_traits::allocator_type String::alloc;
 
 int main(int argc, char const *argv[])
-{
-    // TODO: cover all classes through example uses, other than those covered in exercises.
-    
+{    
     // Exercise 13.2 - recursively calls the constructor as object is created each time
     // Exercise 13.4 - copy constructors used in each case including function parameter.
     // Exercise 13.12 - 3: item1, item2, accum
