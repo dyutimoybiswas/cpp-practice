@@ -1,4 +1,7 @@
 #include "chapter14.hpp"
+#include "StrVec.hpp"
+#include "String.hpp"
+#include "StrBlobPtr.hpp"
 #include <map>
 #include <functional>
 #include <algorithm>
@@ -13,7 +16,12 @@ using std::string;
 using std::ifstream;
 using std::count_if;
 
+// static member definitions.
+allocator_traits::allocator_type StrVec::alloc;
+char_allocator_traits::allocator_type String::alloc;
+
 int main(void) {
+    // TODO: check and resolve warnings.
     // Exercise 14.1 - overloaded operators offer more flexibility than traditional operators wrt object types.
     // Exercise 14.3 - a - builtin, b, c, d: overloaded
 
@@ -21,6 +29,8 @@ int main(void) {
     #ifdef CUSTOM
     Sales_data data;
     cout << data << endl;
+    StrVec sv; sv = {"abc", "def", "ghi"};
+    cout << sv << endl;
     #endif
 
     // Exercise 14.10 - a: improper, b: works

@@ -16,9 +16,7 @@ class Sales_data {
     friend std::istream& operator>>(std::istream&, Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
     friend bool operator==(const Sales_data&, const Sales_data&);
-    inline friend bool operator!=(const Sales_data& lhs, const Sales_data& rhs) {
-        return !(lhs == rhs);
-    }
+    friend bool operator!=(const Sales_data& lhs, const Sales_data& rhs) { return !(lhs == rhs); }
 
     public:
         Sales_data(unsigned int units = 0, double rev = 0.0, std::string bNo = "test-123"): 
@@ -29,19 +27,17 @@ class Sales_data {
         explicit operator double() const { return revenue; }
     
     private:
-        inline std::string isbn() const { return bookNo; }
+        std::string isbn() const { return bookNo; }
         unsigned int units_sold;
         double revenue;
-        inline double avg_price() const { 
-            return units_sold ? revenue / units_sold : 0;
-        }
+        double avg_price() const { return units_sold ? revenue / units_sold : 0; }
         std::string bookNo;
 };
 
 class PrintString {
     public:
         PrintString(std::ostream& o = std::cout, char ch = ' '): os(o), sep(ch) { }
-        inline void operator()(const std::string& s) const { os << s << sep; }
+        void operator()(const std::string& s) const { os << s << sep; }
     private:
         std::ostream& os;
         char sep;
@@ -73,9 +69,9 @@ class MyClass {
         MyClass(int v1, int v2, int v3): x(v1), y(v2), z(v3) {}
         int operator()(int a, int b = 0, int c = 0) { return x == a ? y : z; }
     private:
-        int x = 0;
-        int y = 0;
-        int z = 0;
+        int x {0};
+        int y {0};
+        int z {0};
 };
 
 // Exercise 14.37
@@ -91,9 +87,7 @@ class CheckEquals {
 class CheckBounds {
     public:
         CheckBounds(int lb, int ub): lowerBound(lb), upperBound(ub) { }
-        bool operator()(const std::string& s) const {
-            return s.size() >= lowerBound && s.size() <= upperBound;
-        }
+        bool operator()(const std::string& s) const { return s.size() >= lowerBound && s.size() <= upperBound; }
     private:
         int lowerBound;
         int upperBound;
