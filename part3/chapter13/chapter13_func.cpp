@@ -416,3 +416,8 @@ Foo Foo::sorted() const & {
     sort(ret.data.begin(), ret.data.end());
     return ret;
 }
+
+Foo& Foo::operator=(const Foo& f) & {
+    data = f.data;
+    return *this;
+}
