@@ -299,6 +299,7 @@ void String::free() {
     if (elements) {
         for (char* p = elements; p != first_free; char_allocator_traits::destroy(alloc, p++));
         char_allocator_traits::deallocate(alloc, elements, capacity());
+        elements = first_free = cap = nullptr;
     }
 }
 
