@@ -9,13 +9,16 @@ StrVec& StrVec::operator=(std::initializer_list<std::string> i1) {
 }
 
 bool operator==(const StrVec& sv1, const StrVec& sv2) {
-    // TODO: explore algorithms.
     if (sv1.size() != sv2.size())
         return false;
+    #if 0
     for (auto itr1 = sv1.elements, itr2 = sv2.elements; itr1 != sv1.first_free; ++itr1, ++itr2)
         if (*itr1 != *itr2)
             return false;
     return true;
+    #else
+    return std::equal(sv1.begin(), sv1.end(), sv2.begin());
+    #endif
 }
 
 bool operator<(const StrVec& sv1, const StrVec& sv2) {
@@ -29,21 +32,13 @@ bool operator<(const StrVec& sv1, const StrVec& sv2) {
     return itr2 != sv2.first_free;
 }
 
-bool operator>(const StrVec& sv1, const StrVec& sv2) {
-    return sv2 < sv1;
-}
+bool operator>(const StrVec& sv1, const StrVec& sv2) { return sv2 < sv1; }
 
-bool operator<=(const StrVec& sv1, const StrVec& sv2) {
-    return !(sv1 > sv2);
-}
+bool operator<=(const StrVec& sv1, const StrVec& sv2) { return !(sv1 > sv2); }
 
-bool operator>=(const StrVec& sv1, const StrVec& sv2) {
-    return !(sv1 < sv2);
-}
+bool operator>=(const StrVec& sv1, const StrVec& sv2) { return !(sv1 < sv2); }
 
-bool operator!=(const StrVec& sv1, const StrVec& sv2) {
-    return !(sv1 == sv2);
-}
+bool operator!=(const StrVec& sv1, const StrVec& sv2) { return !(sv1 == sv2); }
 
 std::ostream& operator<<(std::ostream& os, const StrVec& sv) {
     for (auto p = sv.elements; p != sv.first_free; ++p)

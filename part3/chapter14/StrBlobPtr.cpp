@@ -1,6 +1,7 @@
 #include "StrBlobPtr.hpp"
 
 StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()) {}
+
 StrBlob::StrBlob(std::initializer_list<std::string> i1): data(std::make_shared<std::vector<std::string>>(i1)) {}
 
 void StrBlob::check(size_type i, const std::string& msg) const {
@@ -22,7 +23,7 @@ void StrBlob::pop_back() {
     data->pop_back();
 }
 
-std::shared_ptr<std::vector<std::string>> StrBlobPtr::check (std::size_t i, const std::string& msg) const {
+std::shared_ptr<std::vector<std::string>> StrBlobPtr::check (size_t i, const std::string& msg) const {
     auto ret = wptr.lock();
     if (!ret)
         throw std::runtime_error("unbound StrBlobPtr");

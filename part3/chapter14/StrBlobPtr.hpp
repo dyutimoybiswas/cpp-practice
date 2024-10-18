@@ -1,3 +1,6 @@
+#ifndef STRBLOBPTR_HPP
+#define STRBLOBPTR_HPP
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -77,3 +80,5 @@ class StrBlob {
         std::string& operator[](size_t n) { return (*data)[n]; }
         std::string& operator[](size_t n) const { return (*data)[n]; }
 };
+
+#endif

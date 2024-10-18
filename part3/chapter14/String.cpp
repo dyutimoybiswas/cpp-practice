@@ -9,6 +9,7 @@ void String::free() {
     if (elements) {
         for (char* p = elements; p != first_free; char_allocator_traits::destroy(alloc, p++));
         char_allocator_traits::deallocate(alloc, elements, capacity());
+        elements = first_free = cap = nullptr;
     }
 }
 
@@ -103,4 +104,80 @@ void String::resize(size_t n, char ch) {
     else if (n < size())
         for (size_t i = size(); i > n; --i)
             pop_back();
+}
+
+std::ostream& operator<<(std::ostream& os, const String& s) {
+    for (char* p = s.elements; p != s.first_free; ++p)
+        os << *p;
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, String& s) {
+    s.free();
+    char ch;
+    while (is >> ch)
+        s.push_back(ch);
+    return is;
+}
+
+bool operator==(const String& s1, const String& s2) {
+    if (s1.size() != s2.size())
+        return false;
+    #if 0
+    for (auto itr1 = s1.elements, itr2 = s2.elements; itr1 != s1.first_free; ++itr1, ++itr2)
+        if (*itr1 != *itr2)
+            return false;
+    return true;
+    #else
+    return std::equal(s1.begin(), s1.end(), s2.begin());
+    #endif
+}
+
+bool operator!=(const String& s1, const String& s2) { return !(s1 == s2); }
+
+bool operator<(const String& s1, const String& s2) {
+    char *itr1 = s1.elements, *itr2 = s2.elements;
+    while(itr1 != s1.first_free) {
+        if (itr1 == s2.first_free || *itr2 < *itr1) return false;
+        else if(*itr1 < *itr2) return true;
+        ++itr1; ++itr2;
+    }
+    return itr2 != s2.first_free;
+}
+
+bool operator<=(const String& s1, const String& s2) { return s1 < s2 || s1 == s2; }
+
+bool operator>(const String& s1, const String& s2) { return s2 < s1; }
+
+bool operator>=(const String& s1, const String& s2) { return s1 > s2 || s1 == s2; }
+
+// TODO: optimize below using chatgpt.
+String operator+(const String& s, char ch) {
+    String result = s;
+    result += ch;
+    return result;
+}
+
+String operator+(char ch, const String& s) {
+    String result;
+    result += ch;
+    result += s;
+    return result;
+}
+
+String operator+(const String& s1, const String& s2) {
+    String result = s1;
+    result += s2;
+    return result;
+}
+
+String& String::operator+=(char ch) {
+    (*this).push_back(ch);
+    return *this;
+}
+
+String& String::operator+=(const String& s) {
+    for (const_iterator p = s.cbegin(); p != s.cend(); ++p)
+        (*this).push_back(*p);
+    return *this;
 }

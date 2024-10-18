@@ -1,6 +1,10 @@
+#ifndef STRVEC_HPP
+#define STRVEC_HPP
+
 #include <string>
 #include <ostream>
 #include <memory>
+#include <algorithm>
 
 using allocator_traits = std::allocator_traits<std::allocator<std::string>>;
 
@@ -47,8 +51,8 @@ class StrVec {
         size_t capacity() const { return cap - elements; }    // number of elements StrVec can hold.
         void resize(size_t, std::string&& = "");
         // overloaded subscript.
-        std::string& operator[](std::size_t n) { return elements[n]; }
-        std::string& operator[](std::size_t n) const { return elements[n]; }
-
-        // void peek() { for (auto p = begin(); p != end(); ++p) std::cout << *p << std::endl; }    // debug
+        std::string& operator[](size_t n) { return elements[n]; }
+        std::string operator[](size_t n) const { return elements[n]; }
 };
+
+#endif

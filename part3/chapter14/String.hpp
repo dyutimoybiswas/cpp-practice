@@ -1,3 +1,6 @@
+#ifndef STRING_HPP
+#define STRING_HPP
+
 #include <utility>
 #include <memory>
 #include <iostream>
@@ -6,6 +9,17 @@ using char_allocator_traits = std::allocator_traits<std::allocator<char>>;
 
 // custom string class
 class String {
+    friend std::ostream& operator<<(std::ostream&, const String&);
+    friend std::istream& operator>>(std::istream&, String&);
+    friend bool operator==(const String&, const String&);
+    friend bool operator!=(const String&, const String&);
+    friend bool operator<(const String&, const String&);
+    friend bool operator<=(const String&, const String&);
+    friend bool operator>(const String&, const String&);
+    friend bool operator>=(const String&, const String&);
+    friend String operator+(const String&, char);
+    friend String operator+(char, const String&);
+    friend String operator+(const String&, const String&);
     private:
         using iterator = char*;
         using const_iterator = const char*;
@@ -45,5 +59,13 @@ class String {
         const_iterator cbegin() const noexcept { return const_cast<char*>(elements); }
         const_iterator cend() const noexcept { return const_cast<char*>(first_free); }
 
-        // void peek() { for (char* p = elements; p != first_free; ++p) std::cout << *p << std::endl; }   // debug
+        // overloaded subscript.
+        char& operator[](size_t n) { return elements[n]; }
+        char operator[](size_t n) const { return elements[n]; }
+
+        // overloaded assignment.
+        String& operator+=(char);
+        String& operator+=(const String&);
 };
+
+#endif

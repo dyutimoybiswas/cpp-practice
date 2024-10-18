@@ -8,6 +8,8 @@
 #include <fstream>
 
 using std::cout;
+using std::cin;
+using std::cerr;
 using std::endl;
 using std::map;
 using std::vector;
@@ -21,7 +23,6 @@ allocator_traits::allocator_type StrVec::alloc;
 char_allocator_traits::allocator_type String::alloc;
 
 int main(void) {
-    // TODO: check and resolve warnings.
     // Exercise 14.1 - overloaded operators offer more flexibility than traditional operators wrt object types.
     // Exercise 14.3 - a - builtin, b, c, d: overloaded
 
@@ -41,10 +42,58 @@ int main(void) {
 
     // Exercise 14.11 - doesn't handle input failure
     // Exercise 14.14 - uses less resources (+= calling + uses extra object)
-    // Exercise 14.16 - TODO: String
-    // Exercise 14.18 - TODO: String
+    
+    // Exercise 14.16
+    #ifdef EXERCISE16
+    // String str1 = "abc", str2 = "abc";
+    // String str1 = "abc", str2 = "abcd";
+    String str1 = "def", str2 = "abc";
+    cout << (str1 == str2 ? "equal" : "not equal") << endl;
+    cout << (str1 != str2 ? "not equal" : "possibly equal") << endl;
+    #endif
+
+    // Example - String output and input
+    #ifdef CUSTOM
+    String str("test string");
+    cout << str << endl;
+    cin >> str;
+    cout << "Entered string: " << str << endl;
+    #endif
+
+    // Exercise 14.18
+    #ifdef EXERCISE18
+    // String s1("abcd"), s2 = "abce";
+    String s1("abcd"), s2 = "abca";
+    cout << (s1 < s2 ? "Less" : "not less") << endl;
+    cout << (s1 <= s2 ? "Less than or equal" : "greater") << endl;
+    cout << (s1 > s2 ? "Greater" : "not greater") << endl;
+    cout << (s1 >= s2 ? "Greater than or equal" : "less") << endl;
+    #endif
+
     // Exercise 14.22 - copy and/or move assignment which is already synthesized for Sales_data.
-    // Exercise 14.26 - TODO: String
+    
+    // Exercise 14.26
+    #ifdef EXERCISE26
+    String s("stationary");
+    cout << s[5] << endl;
+    s[7] = 'e';
+    cout << s << endl;
+    #endif
+    
+    // Example - overloaded + & += for String. Note that all operations are consistent with std::string behavior.
+    #ifdef CUSTOM
+    String abc("abc"), def("def");
+    cout << (abc + def) << endl;
+    cout << (abc + "str") << endl;
+    cout << (def + abc) << endl;
+    cout << ("str" + def) << endl;
+    cout << (abc + 'c') << endl;
+    cout << ('c' + abc + def) << endl;
+    (abc += def).push_back('g');
+    cout << abc << endl;
+    cout << (abc += 'x').size() << endl;
+    #endif
+
     // Exercise 14.29 - because object attributes are modified
     // Exercise 14.31 - StrBlobPtr(StrBlob& a,..) takes care of copy and assignment,
     // and default destructor frees curr. shared and weak pointers are deallocated automatically.
@@ -54,7 +103,7 @@ int main(void) {
     std::string s = "test";
     PrintString printer;                // prints to cout, space separator
     printer(s);
-    PrintString errors(std::cerr, '\n');     // prints to cerr, newline separator
+    PrintString errors(cerr, '\n');     // prints to cerr, newline separator
     errors(s);
     #endif
 
