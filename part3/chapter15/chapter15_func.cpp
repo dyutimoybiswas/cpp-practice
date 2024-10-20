@@ -1,24 +1,20 @@
 #include "chapter15.hpp"
 
-Bulk_quote::Bulk_quote(const std::string& book, double p, std::size_t qty, double disc):
+Bulk_quote::Bulk_quote(const std::string& book, double p, size_t qty, double disc):
 Disc_quote(book, p, qty, disc) {}
 
-double Bulk_quote::net_price(std::size_t cnt) const {
+double Bulk_quote::net_price(size_t cnt) const {
     if (cnt >= min_qty)
         return cnt * (1 - discount) * price;
     else
-        return cnt * price;
+        return cnt * price; /*alternate way: Quote::net_price(cnt);*/
 }
 
-void Quote::debug() {
-    std::cout << "book no: " << bookNo << ", price = " << price << std::endl;
-}
+void Quote::debug() { std::cout << "book no: " << bookNo << ", price = " << price << std::endl; }
 
-void Bulk_quote::debug() {
-    std::cout << "min qty: " << min_qty << ", discount = " << discount << std::endl;
-}
+void Bulk_quote::debug() { std::cout << "min qty: " << min_qty << ", discount = " << discount << std::endl; }
 
-double print_total(std::ostream& os, const Quote& item, std::size_t n) {
+double print_total(std::ostream& os, const Quote& item, size_t n) {
     double ret = item.net_price(n);
     // dynamic binding, Quote/Bulk_quote function will be invoked based on object.
     os << "ISBN: " << item.isbn()
@@ -37,11 +33,30 @@ double Basket::total_receipt(std::ostream& os) const {
     return sum;
 }
 
-std::ostream& operator<<(std::ostream& os, const Query& query) {
-    return os << query.rep();
+void runQueries (std::ifstream& infile) {
+    TextQuery tq(infile);
+    while (true) {
+        std::cout << "Enter word to look for, or q to quit: ";
+        std::string s;
+        if (std::cin >> s || s == "q")  // quit if EOF or q is input
+            break;
+        print(std::cout, tq.query(s)) << std::endl;
+    }
 }
 
-inline Query::Query(const std::string& s): q(new WordQuery(s)) {}
+std::ostream& operator<<(std::ostream& os, const Query& query) { return os << query.rep(); }
+
+Query::Query(const std::string& s): q(new WordQuery(s)) {}
+
+QueryResult TextQuery::query(const std::string& sought) const {
+    // if sought not found.
+    static std::shared_ptr<std::set<line_no>> nodata (new std::set<line_no>);
+    auto loc = wm.find(sought);     // use find instead of [] to avoid adding sought to wm
+    if (loc == wm.end())            // not found
+        return QueryResult(sought, nodata, file);
+    else
+        return QueryResult(sought, loc->second, file);
+}
 
 QueryResult OrQuery::eval(const TextQuery& text) const {
     // virtual calls.

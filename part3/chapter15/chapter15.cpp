@@ -54,6 +54,17 @@ int main(void) {
     cout << basket.back()->net_price(15) << endl;   // calls net_price of Bulk_quote, discount applied
     #endif
 
+    // Example - usage of basket class.
+    #ifdef CUSTOM
+    Basket b;
+    b.add_item(Quote("abc", 123.0));                        // rvalue overload
+    b.add_item(Bulk_quote("def", 12.0, 4, 2.0));            // rvalue overload
+    Quote q("xyz", 1.1);
+    b.add_item(q);                                          // lvalue overload
+    b.add_item(make_shared<Quote>(Quote("pqrs", 3.14)));    // shared_ptr overload
+    b.total_receipt(cout);
+    #endif
+
     // TODO: Exercise 15.32, 15.39, 15.42
     
     // Exercise 15.38 - all operations return query objects and cannot be used to access class-specific members. all 3 are invalid.

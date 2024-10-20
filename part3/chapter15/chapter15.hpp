@@ -28,14 +28,14 @@ class BinaryQuery;
 class AndQuery;
 class OrQuery;
 
-double print_total(std::ostream&, const Quote&, std::size_t);
+double print_total(std::ostream&, const Quote&, size_t);
 
 class Quote {
     public:
         Quote() = default;
         Quote(const std::string& book, double sales_price): bookNo(book), price(sales_price) {}
-        inline std::string isbn() const { return bookNo; }
-        inline virtual double net_price(std::size_t n) const { return n * price; }
+        std::string isbn() const { return bookNo; }
+        virtual double net_price(size_t n) const { return n * price; }
         virtual void debug();
         virtual ~Quote() = default;
         // return dynamically allocated copies of the object
@@ -50,29 +50,27 @@ class Quote {
 class Disc_quote: public Quote {
     public:
         Disc_quote() = default;
-        Disc_quote(const std::string& book, double price, std::size_t qty, double disc):
+        Disc_quote(const std::string& book, double price, size_t qty, double disc):
         Quote(book, price), quantity(qty), discount(disc) {}
-        double net_price(std::size_t) const = 0;
-        inline std::pair<std::size_t, double> discount_policy() const {
-            return std::make_pair(quantity, discount);
-        }
+        double net_price(size_t) const = 0;
+        std::pair<size_t, double> discount_policy() const { return std::make_pair(quantity, discount); }
     protected:
-        std::size_t quantity = 0;
+        size_t quantity = 0;
         double discount = 0.0;
 };
 
 class Bulk_quote: public Disc_quote {
     public:
         Bulk_quote() = default;
-        Bulk_quote(const std::string&, double, std::size_t, double);
+        Bulk_quote(const std::string&, double, size_t, double);
         using Disc_quote::Disc_quote;   // example of using base class constructor
-        double net_price(std::size_t) const override;
+        double net_price(size_t) const override;
         void debug();
         ~Bulk_quote() = default;
         Bulk_quote* clone() const & { return new Bulk_quote(*this); }
         Bulk_quote* clone() && { return new Bulk_quote(std::move(*this)); }
     private:
-        std::size_t min_qty = 0;
+        size_t min_qty = 0;
         // double discount = 0.0;   // overrides discount of Disc_quote
 };
 
@@ -103,15 +101,15 @@ struct Derived_from_Private: public Priv_Derv {};
 // Example of protected access.
 class Base {
     public:
-        inline std::size_t size() const { return n; }
+        size_t size() const { return n; }
     protected:
         int prot_mem;
-        std::size_t n = 0;
+        size_t n = 0;
 };
 #endif
 
 class Sneaky: public Base {
-    inline friend void clobber(Sneaky& s) { s.j = s.prot_mem = 0; }
+    friend void clobber(Sneaky& s) { s.j = s.prot_mem = 0; }
     // inline friend void clobber(Base& b) { b.prot_mem = 0; }     // error
     int j;
 };
@@ -138,10 +136,10 @@ class D: public Base {
 
 class Basket {
     public:
-        inline void add_item(const std::shared_ptr<Quote>& sale) { items.insert(sale); }
+        void add_item(const std::shared_ptr<Quote>& sale) { items.insert(sale); }
         // to allow users to add items directly instead of converting to shared_ptr
-        inline void add_item(const Quote& sale) { items.insert(std::shared_ptr<Quote>(sale.clone())); }
-        inline void add_item(Quote&& sale) { items.insert(std::shared_ptr<Quote>(std::move(sale).clone())); }
+        void add_item(const Quote& sale) { items.insert(std::shared_ptr<Quote>(sale.clone())); /* alternate way: add_item(std::make_shared<Quote>(sale.clone()));*/ }
+        void add_item(Quote&& sale) { items.insert(std::shared_ptr<Quote>(std::move(sale).clone())); }
         double total_receipt(std::ostream&) const;
     private:
         static bool compare(const std::shared_ptr<Quote>& lhs, const std::shared_ptr<Quote>& rhs) {
@@ -183,9 +181,9 @@ class QueryResult {
     public:
         QueryResult(std::string s, std::shared_ptr<std::set<line_no>> p, 
                     std::shared_ptr<std::vector<std::string>> f): sought(s), lines(p), file(f) {}
-        inline std::set<line_no>::iterator begin() { return lines->begin(); }
-        inline std::set<line_no>::iterator end() { return lines->end(); }
-        inline std::shared_ptr<std::vector<std::string>> get_file() { return file; }
+        std::set<line_no>::iterator begin() { return lines->begin(); }
+        std::set<line_no>::iterator end() { return lines->end(); }
+        std::shared_ptr<std::vector<std::string>> get_file() { return file; }
 };
 
 // abstract base class for all query types.
@@ -225,9 +223,7 @@ class WordQuery: public Query_base {
 
 // handles query types like ~(word).
 class NotQuery: public Query_base {
-    inline friend Query operator~(const Query& operand) {
-        return std::shared_ptr<Query_base>(new NotQuery(operand));
-    }
+    friend Query operator~(const Query& operand) { return std::shared_ptr<Query_base>(new NotQuery(operand)); }
     private:
         NotQuery(const Query& q): query(q) {}
         std::string rep() const { return "~(" + query.rep() + ")"; }
@@ -239,9 +235,7 @@ class NotQuery: public Query_base {
 class BinaryQuery: public Query_base {
     protected:
         BinaryQuery(const Query& l, const Query& r, std::string s): lhs(l), rhs(r), opSym(s) {}
-        inline std::string rep() const {
-            return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")";
-        }
+        std::string rep() const { return "(" + lhs.rep() + " " + opSym + " " + rhs.rep() + ")"; }
         // Note: eval not implemented (abstract class).
         Query lhs, rhs;        // operands
         std::string opSym;      // operator - & or |
@@ -249,7 +243,7 @@ class BinaryQuery: public Query_base {
 
 // handles query(word1) & query(word2).
 class AndQuery: public BinaryQuery {
-    inline friend Query operator&(const Query& lhs, const Query& rhs) {
+    friend Query operator&(const Query& lhs, const Query& rhs) {
         return std::shared_ptr<Query_base>(new AndQuery(lhs, rhs));
     }
     private:
@@ -259,7 +253,7 @@ class AndQuery: public BinaryQuery {
 
 // handles query(word1) & query(word2).
 class OrQuery: public BinaryQuery {
-    inline friend Query operator|(const Query& lhs, const Query& rhs) {
+    friend Query operator|(const Query& lhs, const Query& rhs) {
         return std::shared_ptr<Query_base>(new OrQuery(lhs, rhs));
     }
     private:
