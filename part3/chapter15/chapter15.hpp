@@ -8,6 +8,8 @@
 #include <set>
 #include <map>
 #include <algorithm>
+#include <sstream>
+#include <fstream>
 
 class Quote;
 class Bulk_quote;
@@ -169,6 +171,8 @@ class TextQuery {
         std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
     public:
         TextQuery(std::ifstream&);
+        QueryResult handleQuery(const std::string&) const;
+        // evaluates word query.
         QueryResult query(const std::string&) const;
 };
 
@@ -200,22 +204,26 @@ class Query_base {
 
 // interface to manage Query_base inheritance hierarchy.
 class Query {
+    // friends since constructor setting pointer to 'Query_base' is private.
+    // Note that friend functions have global visibility and are NOT attached to any class.
     friend Query operator~(const Query&);
     friend Query operator|(const Query&, const Query&);
     friend Query operator&(const Query&, const Query&);
     public:
+        Query() = default;
         Query(const std::string&);
         QueryResult eval(const TextQuery& t) const { return q->eval(t); }
         std::string rep() const { return q->rep(); }
     private:
         Query(std::shared_ptr<Query_base> query): q(query) {}
+        // for runtime polymorphism.
         std::shared_ptr<Query_base> q;
 };
 
 class WordQuery: public Query_base {
     friend class Query;         // Query uses WordQuery constructor
     private:
-        WordQuery(const std::string& s): query_word(s) {}
+        WordQuery(const std::string& w): query_word(w) {}
         QueryResult eval(const TextQuery& t) const { return t.query(query_word); }
         std::string rep() const { return query_word; }
         std::string query_word;     // word to search
@@ -223,7 +231,9 @@ class WordQuery: public Query_base {
 
 // handles query types like ~(word).
 class NotQuery: public Query_base {
-    friend Query operator~(const Query& operand) { return std::shared_ptr<Query_base>(new NotQuery(operand)); }
+    friend Query operator~(const Query& operand) {
+        return std::shared_ptr<Query_base>(new NotQuery(operand));
+    }
     private:
         NotQuery(const Query& q): query(q) {}
         std::string rep() const { return "~(" + query.rep() + ")"; }

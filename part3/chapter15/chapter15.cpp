@@ -5,6 +5,7 @@ using std::endl;
 using std::vector;
 using std::make_shared;
 using std::shared_ptr;
+using std::ifstream;
 
 int main(void) {
     Quote basic;
@@ -65,7 +66,16 @@ int main(void) {
     b.total_receipt(cout);
     #endif
 
-    // TODO: Exercise 15.32, 15.39, 15.42
+    // Example - usage of text query.
+    #ifdef EXERCISE39
+    ifstream inputFile("part3/chapter15/text.txt");
+    runQueries(inputFile);
+    inputFile.close();
+    #endif
+
+    // TODO: Exercise 15.42
+
+    // Exercise 15.32 - copy: shared_ptr ref count increases, move: shared_ptr ref count unchanged, destroyed - shared_ptr normally deallocated
     
     // Exercise 15.38 - all operations return query objects and cannot be used to access class-specific members. all 3 are invalid.
     // Exercise 15.40 - all valid cases, returns left/right/empty based on non-empty lhs and/or rhs.
