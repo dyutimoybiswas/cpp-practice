@@ -79,7 +79,7 @@ TextQuery::TextQuery(std::ifstream& is) : file(new std::vector<std::string>) {
 
 QueryResult TextQuery::query(const std::string& sought) const {
     // if sought not found.
-    static std::shared_ptr<std::set<line_no>> nodata (new std::set<line_no>);
+    std::shared_ptr<std::set<line_no>> nodata (new std::set<line_no>);
     auto loc = wm.find(sought);     // use find instead of [] to avoid adding sought to wm
     if (loc == wm.end())            // not found
         return QueryResult(sought, nodata, file);
