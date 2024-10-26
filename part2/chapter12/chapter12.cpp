@@ -3,6 +3,7 @@
 using std::shared_ptr;
 using std::unique_ptr;
 using std::make_shared;
+using std::ifstream;
 
 StrBlob b1;
 
@@ -38,6 +39,13 @@ int main(int argc, char const *argv[])
     #ifdef CUSTOM
     auto deleter = [](int* p) { delete [] p; };
     shared_ptr<int> sp(new int[10], deleter);
+    #endif
+
+    // Example - usage of text query.
+    #ifdef CUSTOM
+    ifstream inputFile("part2/chapter12/text.txt");
+    runQueries(inputFile);
+    inputFile.close();
     #endif
 
     return 0;

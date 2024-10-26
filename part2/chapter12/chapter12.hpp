@@ -8,18 +8,19 @@
 #include <set>
 #include <sstream>
 #include <initializer_list>
+#include <algorithm>
 
 class StrBlob;
 typedef std::vector<std::string>::size_type size_type;
 
 class StrBlobPtr {
     private:
-        std::shared_ptr<std::vector<std::string>> check (std::size_t, const std::string&) const;
-        std::weak_ptr<std::vector<std::string>> wptr;
-        std::size_t curr;   // position within the array
+        std::shared_ptr<std::vector<std::string>> check (size_t, const std::string&) const;
+        std::weak_ptr<std::vector<std::string>> wptr;   // weak ptr used so that ref count is not affected.
+        size_t curr;   // position within the array
     public:
         StrBlobPtr(): curr(0) {}
-        StrBlobPtr(StrBlob&, std::size_t);
+        StrBlobPtr(StrBlob&, size_t);
         std::string& deref() const;
         StrBlobPtr& incr();
 };
