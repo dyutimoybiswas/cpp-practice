@@ -9,6 +9,10 @@ using std::begin;
 using std::end;
 using std::vector;
 
+// static member definitions.
+template <typename T> 
+typename allocator_traits<T>::allocator_type Vec<T>::alloc;
+
 int main (void) {
     #ifdef CUSTOM
     // Example of function template usage.
@@ -30,13 +34,28 @@ int main (void) {
     cout << "Element " << (itl == l.end() ? "not found." : "found.") << endl;
     #endif
 
-    // TODO: Exercise 16.8
-
     // Exercise 16.7
     #ifdef EXERCISE7
     int arr[] = {0, 1, 2, 3};
     constexpr size_t n = size(arr);
     cout << n << endl;
+    #endif
+
+    // Exercise 16.8 - iterators of container types define == & !=, but not < as often.
+
+    // Exercise 16.16
+    #ifdef EXERCISE16
+    Vec<int> vi1, vi2;
+    vi1 = {1, 2, 3, 4};
+    vi1.push_back(5);
+    vi1.push_back(6);
+
+    vi2 = {1, 2, 3, 7, 8, 9};
+    // vi2 = {1, 2, 3, 4, 5, 6};
+
+    cout << (vi1 == vi2 ? "Equal" : "Unequal") << std::endl;
+    cout << (vi1 < vi2 ? "Less" : "Not less") << std::endl;
+    
     #endif
 
     #ifdef CUSTOM
@@ -68,7 +87,7 @@ int main (void) {
     unique_ptr<int, DebugDelete> pi(new int, DebugDelete());     // uses int
     unique_ptr<string, DebugDelete> ps(new string, DebugDelete());     // uses string
 
-    // Exercise 16.27 - a: no, b: no (TODO: error?), c: yes, d: no, e: yes (provided f1 is defined), f: no
+    // Exercise 16.27 - a: no, b: no, c: yes, d: no, e: yes (provided f1 is defined), f: no
     // Exercise 16.34 - both are illegal, as char* cannot be converted to reference.
 
     // explicit arguments usage.
