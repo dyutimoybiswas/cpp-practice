@@ -1,6 +1,6 @@
 #include "chapter17.hpp"
 
-inline bool operator==(const Sales_data& lhs, const Sales_data& rhs) {
+bool operator==(const Sales_data& lhs, const Sales_data& rhs) {
     return lhs.isbn() == rhs.isbn() && lhs.units_sold == rhs.units_sold 
     && lhs.revenue == rhs.revenue;
 }
@@ -33,7 +33,7 @@ Sales_data& Sales_data::operator+=(const Sales_data& rhs) {
     return *this;
 }
 
-inline bool compareIsbn(const Sales_data& lhs, const Sales_data& rhs) {
+bool compareIsbn(const Sales_data& lhs, const Sales_data& rhs) {
     // TODO: explore forwarding.
     return lhs.isbn() == rhs.isbn();
 }
@@ -44,7 +44,7 @@ std::vector<matches> findBook(const std::vector<std::vector<Sales_data>>& files,
     for (auto it = files.cbegin(); it != files.cend(); ++it) {
         // find range of items with equal isbn.
         auto found = std::equal_range(it->cbegin(), it->cend(), Sales_data(book), compareIsbn);
-        if (found.first != found.second)
+        if (found.second != it->cend() && found.first != found.second)
             ret.push_back(std::make_tuple(it - files.cbegin(), found.first, found.second));
     }
     return ret; // empty, if no matches.

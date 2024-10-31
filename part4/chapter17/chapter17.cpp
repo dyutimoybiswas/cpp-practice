@@ -1,6 +1,7 @@
 #include "chapter17.hpp"
 
 using std::tuple;
+using std::vector;
 using std::cout;
 using std::endl;
 using std::cin;

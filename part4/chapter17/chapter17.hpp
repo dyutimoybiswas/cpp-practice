@@ -16,9 +16,7 @@ class Sales_data {
     friend std::istream& operator>>(std::istream&, Sales_data&);
     friend Sales_data operator+(const Sales_data&, const Sales_data&);
     friend bool operator==(const Sales_data&, const Sales_data&);
-    inline friend bool operator!=(const Sales_data& lhs, const Sales_data& rhs) {
-        return !(lhs == rhs);
-    }
+    friend bool operator!=(const Sales_data& lhs, const Sales_data& rhs) { return !(lhs == rhs); }
     friend bool compareIsbn(const Sales_data&, const Sales_data&);
 
     public:
@@ -28,10 +26,10 @@ class Sales_data {
         Sales_data& operator+=(const Sales_data&);
     
     private:
-        inline std::string isbn() const { return bookNo; }
+        std::string isbn() const { return bookNo; }
         unsigned int units_sold;
         double revenue;
-        inline double avg_price() const { 
+        double avg_price() const { 
             return units_sold ? revenue / units_sold : 0;
         }
         std::string bookNo;
