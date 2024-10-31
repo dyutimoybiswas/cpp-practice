@@ -352,7 +352,7 @@ namespace std {     // to use std::hash
     class Sales_data{
         friend class hash<Sales_data>;
         public:
-            friend inline bool operator==(const Sales_data& lhs, const Sales_data& rhs) {
+            friend bool operator==(const Sales_data& lhs, const Sales_data& rhs) {
                 return lhs.bookNo == rhs.bookNo && 
                     lhs.units_sold == rhs.units_sold && 
                     lhs.revenue == rhs.revenue;
