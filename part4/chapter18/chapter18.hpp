@@ -14,9 +14,8 @@ namespace cplusplus_primer {
     template<typename T> class Blob {
         public:
             // Example of constrcutor raising exception.
-            inline Blob(std::initializer_list<T> i1) try: 
+            Blob(std::initializer_list<T> i1) try: 
             data(std::make_shared<std::vector<T>>(i1)) {
-
             } catch (const std::bad_alloc& e) {
                 // handle out of memory.
             }
@@ -36,7 +35,7 @@ namespace cplusplus_primer {
             public:
                 explicit isbn_mismatch(const std::string& s):
                         std::logic_error(s) { }
-                isbn_mismatch(const std::string& s, const std::string& lhs, const std::string& rhs):
+                explicit isbn_mismatch(const std::string& s, const std::string& lhs, const std::string& rhs):
                             std::logic_error(s), left(lhs), right(rhs) { }
                 const std::string left, right;
         };
@@ -52,12 +51,10 @@ namespace cplusplus_primer {
             Sales_data(std::string b): bookNo(b) {}
             Sales_data& operator+=(const Sales_data&);
         private:
-            inline std::string isbn() const { return bookNo; }
+            std::string isbn() const { return bookNo; }
             unsigned int units_sold;
             double revenue;
-            inline double avg_price() const { 
-                return units_sold ? revenue / units_sold : 0;
-            }
+            double avg_price() const { return units_sold ? revenue / units_sold : 0; }
             std::string bookNo;
     };
 
