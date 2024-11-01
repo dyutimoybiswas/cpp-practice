@@ -87,7 +87,7 @@ int main(void) {
             cout << "1st string is lesser than 2nd." << endl;
         else
             cout << "2nd string is lesser than 1st." << endl;
-            char response;
+        char response;
         cout << "Do you want to continue? ";
         cin >> response;
         continueFlag = tolower(response) == 'y';
