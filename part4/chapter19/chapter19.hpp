@@ -47,11 +47,11 @@ class Screen {
     public:
         typedef std::string::size_type pos;
         Screen() = default;
-        inline char get_cursor() const { return contents[cursor]; }
-        inline char get() const { return contents[0]; }
-        inline char get(pos row, pos col) const { return contents[row * width + col]; }
+        char get_cursor() const { return contents[cursor]; }
+        char get() const { return contents[0]; }
+        char get(pos row, pos col) const { return contents[row * width + col]; }
         // Example of function returning pointer to member.
-        inline static const std::string Screen::*data() { return &Screen::contents; }
+        static const std::string Screen::*data() { return &Screen::contents; }
         // Example of pointer to member function tables.
         Screen& home() { return *this; }
         Screen& forward() { return *this; }
@@ -60,7 +60,7 @@ class Screen {
         Screen& down() { return *this; }
         using Action = Screen& (Screen::*)();
         enum Directions { HOME, FORWARD, BACK, UP, DOWN};
-        inline Screen& move(Directions d) {
+        Screen& move(Directions d) {
             return (this->*Menu[d])();  // Menu[d] points to a member function.
         }
         // Exercise 19.12
