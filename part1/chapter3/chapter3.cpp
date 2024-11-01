@@ -14,8 +14,8 @@ using std::endl;
  * Set - O(logN) time and O(1) space for search, insert and delete
  * Stack - O(1) time and space for push and pop
  * Queue - O(1) time and space for push and pop
- * Vector - O() time and space for push_back and pop_back, O(N) time and O(1) space for erase and clear
- * String - O() time and space for push_back and pop_back, O(N) time and O(1) space for erase and clear
+ * Vector - O(1) time and space for push_back and pop_back, O(N) time and O(1) space for erase and clear
+ * String - O(1) time and space for push_back and pop_back, O(N) time and O(1) space for erase and clear
  */
 
 int main(void) {
