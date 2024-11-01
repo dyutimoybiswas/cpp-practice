@@ -58,7 +58,7 @@ int main(void) {
 
     #ifdef CUSTOM
     // Assignment can appear as a condition, returns the assigned value.
-    if (int x = 5) std::cout << "Always executes." << std::endl;
+    if (int x = 5) std::cout << "Always executes, unless x = 0." << std::endl;
 
     // Print numbers as they are entered and calculate frequencies in real time.
     int value = 0, lastValue = 0;
