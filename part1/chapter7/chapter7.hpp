@@ -21,9 +21,7 @@ class SalesData {
         SalesData (std::string bNo,unsigned units, double rev): bookNo(bNo), unitsSold(units), revenue(rev) {}
         // Exercise 7.12
         SalesData (std::istream&);
-        std::string isbn (void) const {
-            return bookNo;
-        }
+        std::string isbn () const { return bookNo; }
         SalesData& combine (const SalesData&);
         // Exercise 7.26
         inline double avgPrice (void) const;
@@ -36,12 +34,8 @@ class Person {
         std::string address;
     public:
         /* const as not modifying the calling object */
-        std::string getName (void) const {
-            return name;
-        }
-        std::string getAddress (void) const {
-            return address;
-        }
+        std::string getName () const { return name; }
+        std::string getAddress () const { return address; }
 };
 
 // Exercise 7.6
@@ -53,7 +47,7 @@ SalesData add (const SalesData&, const SalesData&);
 class Screen {
     public:
         using pos = std::string::size_type;
-        Screen (void) = default;    // cannot rely because dimensionless screen created.
+        Screen () = default;    // cannot rely because dimensionless screen created.
         Screen (pos ht, pos wd): height(ht), width(wd), contents(ht * wd, ' ') {}
         Screen (pos ht, pos wd, char c): height(ht), width(wd), contents(ht * wd, c) {}
         Screen& move (pos, pos);
@@ -75,7 +69,7 @@ class SalesDataNew {
     public:
         int member;
         std::string s;
-        SalesDataNew ():member(0),s("") {}
+        SalesDataNew(): member(0), s("") {}
         explicit SalesDataNew (const SalesDataNew& s) { 
             this->member = s.member;
         }
@@ -89,8 +83,8 @@ class Debug {
         bool io;
         bool other;
     public:
-        constexpr Debug (bool b = true):hw(b),io(b),other(b) {}
-        constexpr Debug (bool h, bool i, bool o):hw(h),io(i),other(o) {}
+        constexpr Debug(bool b = true): hw(b), io(b), other(b) {}
+        constexpr Debug(bool h, bool i, bool o): hw(h), io(i), other(o) {}
 };
 
 // Exercise 7.57

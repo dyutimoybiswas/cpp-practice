@@ -20,7 +20,7 @@ class Y {
 // Exercise 7.36 - no error
 #ifdef EXERCISE36
 struct X {
-    X(int i, int j):base(i), rem(base%j) {}
+    X(int i, int j): base(i), rem(base%j) {}
     int rem, base;
 };
 #endif
@@ -43,7 +43,7 @@ int main(int argc, char const *argv[])
     // note
     #ifdef CUSTOM
     SalesDataNew obj1;
-    SalesData obj2(obj1);   // valid
+    // SalesData obj2(obj1);   // invalid
     // SalesData obj2 = obj1;  // invalid
     #endif
     

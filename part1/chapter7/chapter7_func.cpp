@@ -10,7 +10,7 @@ SalesData& SalesData::combine (const SalesData& rhs) {
     return *this;   // return object which called the function
 }
 
-double SalesData::avgPrice (void) const {
+double SalesData::avgPrice () const {
     return unitsSold ? revenue / unitsSold : 0.0;
 }
 
@@ -48,6 +48,6 @@ Screen& Screen::set (char c) {
 }
 
 // Exercise 7.33
-Screen::pos Screen::size (void) const {
+Screen::pos Screen::size () const {
     return height * width;
 }
