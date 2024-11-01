@@ -10,9 +10,7 @@ using std::cerr;
 
 // Excercise 6.44
 #ifdef EXERCISE44
-inline bool isShorter(const string &s1, const string &s2) {
-    return s1.size() < s2.size();
-}
+inline bool isShorter(const string &s1, const string &s2) { return s1.size() < s2.size(); }
 #endif
 
 // Excercise 6.46
@@ -123,9 +121,7 @@ int main(int argc, char const *argv[])
 
     // Excercise 6.55
     #ifdef EXERCISE55
-    vector<int (*)(int, int)> pvect {baz, bam};
-    pvect.clear();
-    pvect = {add, subtract, multiply, divide};
+    vector<int (*)(int, int)> pvect {add, subtract, multiply, divide};
     cout << "Adding 2 and 5 = " << pvect[0](2, 5) << endl;
     cout << "Subtracting 4 from 18 = " << pvect[1](18, 4) << endl;
     cout << "Multiplying 17 and 31 = " << pvect[2](17, 31) << endl;

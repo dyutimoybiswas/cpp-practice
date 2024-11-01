@@ -36,14 +36,15 @@ void foo (int* p) {
 void foo (const string &s) {}
 
 bool containsCapital (const string &s) {
-    for (char ch: s) {
-        if (isupper(ch)) return true;
-    }
+    for (char ch: s)
+        if (isupper(ch))
+            return true;
     return false;
 }
 
 void convertToLower (string &s) {
-    for(char &ch: s) ch = tolower(ch);
+    for(char &ch: s)
+        ch = tolower(ch);
 }
 
 int larger (int a, int* pb) {
@@ -58,7 +59,8 @@ void print (const int ia[10]) {
 
 int sumElements (initializer_list<int> nums) {
     int sum = 0;
-    for (int n: nums) sum += n;
+    for (int n: nums)
+        sum += n;
     return sum;
 }
 
@@ -68,7 +70,7 @@ void printVector (const vector<int> &v, vector<int>::iterator it) {
         return;
     }
     cout << *it << " ";
-    printVector(v, it+1);   // it++ will increment it in the previous stack location
+    printVector(v, it + 1);   // it++ will increment it in the previous stack location
 }
 
 // Excercise 6.36
