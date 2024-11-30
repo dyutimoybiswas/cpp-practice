@@ -1,0 +1,7 @@
+Sleep:
+* .sleep() and variants suspend execution of a thread until given amount of time has passed.
+* Lock(s) cannot be released when a thread is sleeping.
+
+Wait:
+* .wait() and variants suspend execution of a a thread until notify() or its variants are called.
+* releases the lock(s) before waiting
