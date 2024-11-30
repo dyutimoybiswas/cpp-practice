@@ -1,0 +1,9 @@
+Mutex:
+* allows one thread to access critical section at a time
+* locking mechanism
+* 
+
+Semaphore:
+* allows multiple threads to access critical section at a time
+* signalling mechanism
+
