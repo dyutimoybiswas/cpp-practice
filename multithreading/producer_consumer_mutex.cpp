@@ -1,5 +1,5 @@
 /**
- * @file producer_consumer.cpp
+ * @file producer_consumer_mutex.cpp
  * @author Dyutimoy Biswas
  * @brief 
  * producer is a thread that generates data, and consumer is a thread that utilizes this data
