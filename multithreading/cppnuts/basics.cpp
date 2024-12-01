@@ -2,12 +2,13 @@
  * @file basics.cpp
  * @author Dyutimoy Biswas
  * @brief 
- * Every application contains a default thread (main()), other threads can be created
- * from within this function.
- * Thread can also be considered as a lightweight process.
+ * Every application contains a default thread (main()), other threads can be created from within this function.
+ * Thread can also be considered as a lightweight process. Threads cannot be copied.
  * Common examples are - browser tabs, VSCode editor and autocomplete, etc.
  * Optimization level 3 (-O3) is needed for best results.
  * Optimization is done to reduce compile time and debuggability (debugging introduces additional checks)
+ * Note: join threads right after creation, don't put any code belonging to the main thread in between.
+ * Not joining a thread results in error.
  * @version 0.1
  * @date 2024-11-16
  * @copyright Copyright (c) 2024
@@ -33,6 +34,7 @@ int main(int argc, char const *argv[])
     std::thread t1(OddCount, start, end);
     std::thread t2(EvenCount, start, end);
 
+    // wait for the threads to finish executing.
     t1.join();
     t2.join();
 
