@@ -5,6 +5,7 @@
  * used to 1. notify other threads 2. wait for some conditions
  * notified using notify_one() / notify_all()
  * wait, wait_for, wait_until are used to wait
+ * Checking for mutex lock consumes CPU cycles. cv.wait() only executes if variant(s) of notify() is called.
  * @version 0.1
  * @date 2024-11-21
  * 
@@ -29,7 +30,7 @@ void addMoney(int money) {
 
 void withdrawMoney(int money) {
     std::unique_lock<std::mutex> lock(m);
-    cv.wait(lock, []() -> bool { return balance != 0; });   // wait till predicate returns true. mutex is unlocked while waiting (since unique_lock)
+    cv.wait(lock, []() -> bool { return balance != 0; });   // wait (thread sleeps) till predicate returns true. mutex is unlocked while waiting (since unique_lock)
     if (balance >= money) {
         balance -= money;
         std::cout << "Amount deducted = " << money << std::endl;
