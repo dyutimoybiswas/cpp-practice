@@ -7,6 +7,9 @@
  * Common examples are - browser tabs, VSCode editor and autocomplete, etc.
  * Optimization level 3 (-O3) is needed for best results.
  * Optimization is done to reduce compile time and debuggability (debugging introduces additional checks)
+ * Note 1: When putting code in main thread between spawning and joining other threads, it executes in parallel
+ * to other threads and may need to handle critical sections. After threads have joined, the code that runs in
+ * main thread isn’t parallel to any other thread.
  * Not joining a thread results in error.
  * @version 0.1
  * @date 2024-11-16
