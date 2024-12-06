@@ -1,0 +1,3 @@
+Race condition can be detected using g++ option -fsanitizer with value = 'thread'
+syn - g++ <options> -fsanitizer=thread <prog_name.cpp>
+If data race is happening, it is shown when executing the program
